@@ -1,8 +1,14 @@
 exe: fonctions.o main.o
-    gcc fonctions.o main.o -o exe
+@echo "compilation de l'executable"
+gcc fonctions.o main.o -o exe
+
 fonctions.o: fonctions.c fonctions.h
-    gcc -c -Wall fonctions.c  -o fonctions.o
+@echo "compilations de fonctions"
+gcc -c -Wall fonctions.c  -o fonctions.o
+
 main.o: main.c fonctions.h
-    gcc -c -Wall main.c -o main.o
+@echo "compilations du main"
+gcc -c -Wall main.c -o main.o
 clean:
-    rm -f *.o
+@echo "J'ai tout effacé"
+rm -f *.o
