@@ -3,11 +3,11 @@ exe: fonctions.o main.o
 	gcc fonctions.o main.o -o exe
 
 fonctions.o: fonctions.c fonctions.h
-	@echo "compilations de fonctions"
+	@echo "compilation de fonctions"
 	gcc -c -Wall fonctions.c  -o fonctions.o
 
 main.o: main.c fonctions.h
-	@echo "compilations du main"
+	@echo "compilation du main"
 	gcc -c -Wall main.c -o main.o
 
 clean:
