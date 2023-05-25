@@ -2,9 +2,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 typedef struct Joueur{
     char* nom;
+    Carte* main;
 } Joueur;
+
 
 typedef struct Carte{
     int numero;     //numéro carte de 1 à 104
