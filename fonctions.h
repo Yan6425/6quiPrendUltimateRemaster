@@ -10,9 +10,9 @@ void creerJoueurs(int nbJoueurs);
 void reglages();// sert à parametrer le jeu
 void jouer();
 void _distribution();
-void _tricarte();
-void _plateauDeBase();
+void _triMain();
 void _choixCarte();
+void _triCarte();
 void _comparaisons();
 void _distributionPts();
 
