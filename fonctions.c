@@ -3,37 +3,19 @@
 #include <stdlib.h>
 
 
-void _6QuiPrend(){
-    // explication de la fonction
-}
+typedef struct Joueur{
+    char* nom;
+    Carte* main;
+} Joueur;
 
 
-int lancerPartie(){
-    // explication de la fonction
-    return 0;
-}
+typedef struct Carte{
+    int numero;
+    int valeur;
+} Carte;
 
 
-int distribution(){
-    // explication de la fonction
-    return 0;
-}
-
-
-int choixCarte(){
-    // explication de la fonction
-    return 0;
-}
-
-
-int comparaisons(){
-    // explication de la fonction
-    return 0;
-}
-
-
-int distributionPts(){
-    // explication de la fonction
-    return 0;
-}
-
+typedef struct Noeud{
+    Carte carte;
+    Noeud* suivant;
+} Noeud;
