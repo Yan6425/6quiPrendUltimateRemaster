@@ -9,11 +9,11 @@ void sixQuiPrend();
 void creerJoueurs(int nbJoueurs);
 void reglages();// sert à parametrer le jeu
 void jouer();
-void _distribution();
-void _triMain();
-void _choixCarte();
-void _triCarte();
-void _comparaisons();
-void _distributionPts();
+int _distribution();
+int _triMain();
+int _choixCarte();
+int _triCarte();
+int _comparaisons();
+int _distributionPts();
 
 #endif
