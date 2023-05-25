@@ -8,10 +8,11 @@ typedef struct Noeud Noeud; // sert a modéliser un noeud d'une liste chainée
 void 6QuiPrend();
 void creerJoueurs(int nbJoueurs);
 void reglages();// sert à parametrer le jeu
-void _distribution();
 void jouer();
+void _distribution();
+void _tricarte();
 void _plateauDeBase();
-void choixCarte();
+void _choixCarte();
 void _comparaisons();
 void _distributionPts();
 
