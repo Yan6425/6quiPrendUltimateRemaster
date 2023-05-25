@@ -13,3 +13,9 @@ typedef struct Carte{
     int numero;
     int valeur;
 } Carte;
+
+
+typedef struct Noeud{
+    Carte carte;
+    Noeud* suivant;
+} Noeud;
