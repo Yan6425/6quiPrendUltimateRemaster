@@ -6,10 +6,13 @@ typedef struct Carte Carte; // sert à modéliser une carte
 typedef struct Noeud Noeud; // sert a modéliser un noeud d'une liste chainée 
 
 void 6QuiPrend();
-void distribution();
-void plateauDeBase();
+void creerJoueurs(int nbJoueurs);
+void reglages();// sert à parametrer le jeu
+void _distribution();
+void jouer();
+void _plateauDeBase();
 void choixCarte();
-void comparaisons();
-void distributionPts();
+void _comparaisons();
+void _distributionPts();
 
 #endif
