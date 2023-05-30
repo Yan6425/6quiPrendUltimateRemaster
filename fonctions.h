@@ -5,14 +5,18 @@ typedef struct Joueur Joueur; // sert à modéliser un joueur ainsi que son nomb
 typedef struct Carte Carte; // sert à modéliser une carte
 typedef struct Noeud Noeud; // sert a modéliser un noeud d'une liste chainée 
 
-void creerJoueurs(int nombreJoueurs);
-Joueur _creerJoueur(char* nom);
+Joueur* creerTblJoueurs(int nombreJoueurs);
+Joueur creerJoueur(char* nom);
 void reglages();
-void lancerPartie();
-int _distribution();
-Carte _creerCarte(int numero);
-int _choixCarte();
-int _comparaisons();
-int _distributionPts();
+void lancerPartie(Joueur* tblJoueurs, int nombreJoueurs);
+int lancerManche(Joueur* tblJoueurs, int nombreJoueurs);
+int distribution(Joueur* tblJoueurs, int nombreJoueurs);
+Noeud* melangerCartes();
+void ajouterNoeud(Noeud** liste, Carte carte);
+Carte extraireCarte(Noeud** liste, int index);
+Carte creerCarte(int numero);
+int choixCarte(Joueur joueur);
+int comparaisons();
+int distributionPts();
 
 #endif
