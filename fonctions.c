@@ -39,8 +39,6 @@ void jouer(){
     _distributionPts();
 }
 
-<<<<<<< HEAD
-}
 
 Carte creerCarte(int numero){
     Carte carte;
@@ -61,7 +59,7 @@ Carte creerCarte(int numero){
     
     return carte;
 }  
-=======
+
 
  Joueur creerJoueur(char* nom){
     Joueur joueur;
@@ -70,6 +68,4 @@ Carte creerCarte(int numero){
     joueur.nbPoints = 0;
     return joueur;
 }
-    
-    
->>>>>>> origin/main
+
