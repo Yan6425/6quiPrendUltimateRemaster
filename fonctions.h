@@ -10,7 +10,6 @@ void creerJoueurs(int nbJoueurs);
 Joueur creerJoueur(char* nom);
 void reglages();// sert à parametrer le jeu
 void jouer();
-
 int _distribution();
 int _triMain();
 int _choixCarte();
