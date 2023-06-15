@@ -7,13 +7,13 @@
 typedef struct Joueur{
     char* nom;
     Carte* main;
-    int nombrePoints;
+    int nbPoints;
 } Joueur;
 
 
 typedef struct Carte{
-    int numero;
-    int valeur;
+    int numero;     //numéro carte de 1 à 104
+    int valeur;     //nombre tête de boeuf de 1 à 7
 } Carte;
 
 
@@ -35,12 +35,20 @@ Joueur* creerTblJoueurs(int nombreJoueurs){
 }
 
 
-Joueur creerJoueur(char* nom){
-    Joueur joueur;
-    joueur.nom = nom;
-    joueur.main = malloc(10 * sizeof(Carte));
-    joueur.nombrePoints = 0;
-    return joueur;
+void sixQuiPrend(){
+    creerJoueurs(int nbJoueurs);
+    reglages();
+    jouer();
+}
+
+
+void jouer(){
+    _distribution();
+    _triMain();
+    _choixCarte();
+    _triCarte();
+    _comparaisons();
+    _distributionPts();
 }
 
 
@@ -99,39 +107,29 @@ Carte extraireCarte(Noeud** liste, int index){
 Carte creerCarte(int numero){
     Carte carte;
     carte.numero = numero;
-    if (numero % 10 == 5){
-        carte.valeur = 2;
+    if (carte.numero == 55){
+        carte.valeur=7
     }
-    else if (numero % 10 == 0){
-        carte.valeur = 3;
+    else if (carte.numero % 10 == 0){
+        carte.valeur=3
     }
-    else if (numero % 11 == 0){
-        carte.valeur = 5;
+    else if (carte.numero % 5 == 0){
+        carte.valeur=2 
     }
-    else if (numero == 5){
-        carte.valeur = 7;
+    else if (carte.numero % 10 == 0){
+        carte.valeur=5
     }
-    else {
-        carte.valeur = 1;
-    }
+    else carte.valeur=1
+    
     return carte;
-}
+}  
 
 
-int choixCarte(Joueur joueur){
-    // explication de la fonction
-    return 0;
-}
-
-
-int comparaisons(){
-    // explication de la fonction
-    return 0;
-}
-
-
-int distributionPts(){
-    // explication de la fonction
-    return 0;
+ Joueur creerJoueur(char* nom){
+    Joueur joueur;
+    joueur.nom = nom;
+    joueur.main = malloc(10 * sizeof(Carte));
+    joueur.nbPoints = 0;
+    return joueur;
 }
 
