@@ -23,6 +23,18 @@ typedef struct Noeud{
 } Noeud;
 
 
+Joueur* creerTblJoueurs(int nombreJoueurs){
+    Joueur* tblJoueur = malloc(nombreJoueurs * sizeof(Joueur));
+    char* nom = malloc(100 * sizeof(char));
+    for (int i = 0; i < nombreJoueurs; i++){
+        printf("Joueur %d, entre ton nom : ", i + 1);
+        scanf("%s", nom);
+        tblJoueur[i] = creerJoueur(nom);
+    }
+    return tblJoueur;
+}
+
+
 void sixQuiPrend(){
     creerJoueurs(int nbJoueurs);
     reglages();
@@ -37,6 +49,9 @@ void jouer(){
     _triCarte();
     _comparaisons();
     _distributionPts();
+}
+
+<<<<<<< HEAD
 }
 
 
@@ -61,6 +76,7 @@ Carte creerCarte(int numero){
 }  
 
 
+
  Joueur creerJoueur(char* nom){
     Joueur joueur;
     joueur.nom = nom;
@@ -68,5 +84,4 @@ Carte creerCarte(int numero){
     joueur.nbPoints = 0;
     return joueur;
 }
-    
-    
+

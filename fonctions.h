@@ -9,7 +9,6 @@ void sixQuiPrend();
 void creerJoueurs(int nbJoueurs);
 void reglages();// sert à parametrer le jeu
 void jouer();
-
 int _distribution();
 Carte creerValeurCarte(int numero);
 int _triMain();
