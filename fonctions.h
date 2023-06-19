@@ -2,19 +2,23 @@
 #define __fonctions_H_
 
 typedef struct Joueur Joueur; // sert à modéliser un joueur ainsi que son nombre de points
+Joueur creerJoueur(char* nom);
 typedef struct Carte Carte; // sert à modéliser une carte
+Carte creerCarte(int numero);
 typedef struct Noeud Noeud; // sert a modéliser un noeud d'une liste chainée 
+void insererNoeud(Noeud** liste, Carte carte, int index);
+Noeud* extraireNoeud(Noeud** liste, int index);
 
 void sixQuiPrend();
-void creerJoueurs(int nbJoueurs);
 void reglages();// sert à parametrer le jeu
-void jouer();
-int _distribution();
-Carte creerValeurCarte(int numero);
-int _triMain();
-int _choixCarte();
-int _triCarte();
-int _comparaisons();
-int _distributionPts();
+void lancerPartie(Joueur* tblJoueurs, int nbJoueurs, int nbCartes);
+Joueur* creerTblJoueurs(int nbJoueurs);
+int distribution(Noeud** plateau, Joueur* tblJoueurs, int nbJoueurs, int nbCartes);
+Noeud* melangerCartes(int nbCartes);
+Carte* distribuerMain();
+int choixCarte();
+int triCarte();
+int comparaisons();
+int distributionPts();
 
 #endif
