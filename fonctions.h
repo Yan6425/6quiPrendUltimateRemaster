@@ -7,11 +7,11 @@ typedef struct Noeud Noeud; // sert a modéliser un noeud d'une liste chainée
 
 void sixQuiPrend();
 void creerJoueurs(int nbJoueurs);
-Joueur creerJoueur(char* nom);
 void reglages();// sert à parametrer le jeu
 void jouer();
 
 int _distribution();
+Carte creerValeurCarte(int numero);
 int _triMain();
 int _choixCarte();
 int _triCarte();
