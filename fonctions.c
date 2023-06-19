@@ -65,14 +65,6 @@ Joueur* creerTblJoueurs(int nombreJoueurs){//mise en place d'un tableau pour ras
 }
 
 
-void sixQuiPrend(){
-    int nbJoueurs;
-    int nbCartes;
-    Joueur* tblJoueurs = creerTblJoueurs(nbJoueurs);
-    reglages();
-    lancerPartie(tblJoueurs, nbJoueurs, nbCartes);
-}
-
 
 void reglages(){
 
@@ -88,7 +80,7 @@ void lancerPartie(Joueur* tblJoueurs, int nombreJoueurs){
 
 
 int distribution(Noeud** plateau, Joueur* tblJoueurs, int nbJoueurs, int nbCartes){
-    Noeud* paquet = melangerCartes(int nbCartes);//création du paquets
+    Noeud* paquet = melangerCartes(int nbCartes);       //création du paquets
     for (int i = 0; i < 4; i++){
         insererNoeud(&(plateau[i]), extraireNoeud(&paquet, 0)->carte, 0);
     }
@@ -158,7 +150,7 @@ Carte choixCarte (Joueur* joueur, int nbCartes){
     do {
         printf("%s, quelle carte voulez vous jouer ? ", joueur->nom);
         scanf("%d",reponseJoueur);
-    }while (reponseJoueur<1 || reponseJoueur>nbCartes);
+    }while (reponseJoueur<1 || reponseJoueur>nbCartes);     //test pour s'assurer que le joueur entre bien un nombre correct
     for (int i = 0; i < nbCartes; i++){
         if (i != reponseJoueur - 1){
             tabTmp[j] = joueur->main[i];

@@ -9,7 +9,7 @@ typedef struct Noeud Noeud; // sert a modéliser un noeud d'une liste chainée
 void insererNoeud(Noeud** liste, Carte carte, int index);
 Noeud* extraireNoeud(Noeud** liste, int index);
 
-void sixQuiPrend();//ratio
+
 void reglages();// sert à parametrer le jeu
 void lancerPartie(Joueur* tblJoueurs, int nbJoueurs, int nbCartes);//mets en place le plateau et la distribution
 Joueur* creerTblJoueurs(int nbJoueurs);//rassemble tous les joueurs dans un tableau
