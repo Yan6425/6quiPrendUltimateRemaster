@@ -6,16 +6,16 @@ Joueur creerJoueur(char* nom);
 typedef struct Carte Carte; // sert à modéliser une carte
 Carte creerCarte(int numero);
 typedef struct Noeud Noeud; // sert a modéliser un noeud d'une liste chainée 
-void ajouterNoeud(Noeud** liste, Carte carte);
+void insererNoeud(Noeud** liste, Carte carte, int index);
 Noeud* extraireNoeud(Noeud** liste, int index);
 
 void sixQuiPrend();
 void reglages();// sert à parametrer le jeu
 void lancerPartie(Joueur* tblJoueurs, int nbJoueurs, int nbCartes);
-void creerTblJoueurs(int nbJoueurs);
-int distribution(Carte** plateau, Joueur* tblJoueurs, int nbJoueurs, int nbCartes);
+Joueur* creerTblJoueurs(int nbJoueurs);
+int distribution(Noeud** plateau, Joueur* tblJoueurs, int nbJoueurs, int nbCartes);
 Noeud* melangerCartes(int nbCartes);
-int distribuerMain();
+Carte* distribuerMain();
 int choixCarte();
 int triCarte();
 int comparaisons();
