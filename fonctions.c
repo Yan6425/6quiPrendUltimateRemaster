@@ -76,7 +76,6 @@ Carte creerCarte(int numero){
 }  
 
 
-
  Joueur creerJoueur(char* nom){
     Joueur joueur;
     joueur.nom = nom;
