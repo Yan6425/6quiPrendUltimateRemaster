@@ -75,13 +75,11 @@ void sixQuiPrend(){
 
 
 void reglages(){
-    // explication de la fonction
 
 }
 
 
 void lancerPartie(Joueur* tblJoueurs, int nombreJoueurs){
-    // explication de la fonction
     Noeud** plateau = malloc(4 * sizeof( (Noeud*)malloc(sizeof(Noeud)) ));
 
     distribution(plateau, tblJoueurs, nbJoueurs, nbCartes);
@@ -136,4 +134,15 @@ Carte* distribuerMain(Noeud** paquet){
     }
 
     return main;
+}
+
+int choixCarte (Joueur joueur, int nbCartes){
+    int rep;
+    printf("Joueur %d, quelle carte voulez vous jouer ? ");
+    scanf("%d",rep);
+    while (rep<0; rep>nbCartes){
+        printf("Joueur %d, entrez un nombre valide s'il vous plait !");  //boucle si le joueur entre un mauvais nb
+    }
+
+    return Carte;
 }
