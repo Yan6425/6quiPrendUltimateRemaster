@@ -38,10 +38,10 @@ typedef struct Joueur{ //structure joueur en fonction de son nom sa main et son 
 } Joueur;
 
 
-Joueur creerJoueur(char* nom){
+Joueur creerJoueur(char* nom){//donne un nom,une main et un nombre de points 
     Joueur joueur;
     joueur.nom = nom;
-    joueur.main = malloc(10 * sizeof(Carte));
+    joueur.main = malloc(10 * sizeof(Carte)); //initialise la main du joueur
     joueur.nbPoints = 0;
     return joueur;
 }
@@ -53,7 +53,7 @@ typedef struct Noeud{
 } Noeud;
 
 
-Joueur* creerTblJoueurs(int nombreJoueurs){
+Joueur* creerTblJoueurs(int nombreJoueurs){//mise en place d'un tableau pour rassembler tous les joueurs
     Joueur* tblJoueur = malloc(nombreJoueurs * sizeof(Joueur));
     char* nom = malloc(100 * sizeof(char));
     for (int i = 0; i < nombreJoueurs; i++){
@@ -80,7 +80,7 @@ void reglages(){
 
 
 void lancerPartie(Joueur* tblJoueurs, int nombreJoueurs){
-    Noeud** plateau = malloc(4 * sizeof( (Noeud*)malloc(sizeof(Noeud)) ));
+    Noeud** plateau = malloc(4 * sizeof( (Noeud*)malloc(sizeof(Noeud)) ));//initialisation du plateau
 
     distribution(plateau, tblJoueurs, nbJoueurs, nbCartes);
 }
@@ -88,7 +88,7 @@ void lancerPartie(Joueur* tblJoueurs, int nombreJoueurs){
 
 
 int distribution(Noeud** plateau, Joueur* tblJoueurs, int nbJoueurs, int nbCartes){
-    Noeud* paquet = melangerCartes(int nbCartes);
+    Noeud* paquet = melangerCartes(int nbCartes);//création du paquets
     for (int i = 0; i < 4; i++){
         insererNoeud(&(plateau[i]), extraireNoeud(&paquet, 0)->carte, 0);
     }
@@ -121,7 +121,7 @@ Noeud* melangerCartes(int nbCartes){
 
 
 void ajouterNoeud(Noeud** liste, Carte carte){
-    Noeud* noeud = (Noeud*)malloc(sizeof(Noeud));
+    Noeud* noeud = (Noeud*)malloc(sizeof(Noeud));//allocation pour la taille d'un noeud 
     noeud->carte = carte;
     noeud->suivant = *liste;
     *liste = noeud;
