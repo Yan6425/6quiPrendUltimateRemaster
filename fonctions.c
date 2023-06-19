@@ -86,22 +86,36 @@ void lancerPartie(Joueur* tblJoueurs, int nombreJoueurs){
 }
 
 
-int distribution(Joueur* tblJoueurs, int nombreJoueurs){
-    Noeud* paquet = melangerCartes();
+
+int distribution(Noeud** plateau, Joueur* tblJoueurs, int nbJoueurs, int nbCartes){
+    Noeud* paquet = melangerCartes(int nbCartes);
+    for (int i = 0; i < 4; i++){
+        insererNoeud(&(plateau[i]), extraireNoeud(&paquet, 0)->carte, 0);
+    }
+    for (int i = 0; i < nbJoueurs; i++){
+        tblJoueurs[i].main = distribuerMain(&paquet);
+    }
     return 0;
 }
 
-
-int distribution(Noeud** plateau, Joueur* tblJoueurs, int nbJoueurs, int nbCartes){
-    Noeud* paquet = melangerCartes(nbCartes);
-    
-    for (int i = 1; i <= 104; i++){
-        ajouterNoeud(&listeDeCartes, creerCarte(i));
+Noeud* melangerCartes(int nbCartes){
+    srand(time(NULL));
+    Noeud* paquet = (Noeud*)malloc(sizeof(Noeud));
+    Carte* tblCartes = malloc(nbCartes * sizeof(Carte));
+    int iTmp;
+    Carte tmp;
+    for (int i = 1; i <= nbCartes; i++){
+        tblCartes[i] = creerCarte(i);
     }
-    for (int i = 104; i > 0; i++){
-        ajouterNoeud(&paquet, extraireCarte(&listeDeCartes, rand() % i));
+    for (int i = 0; i < nbCartes; i++){
+        iTmp = rand() % nbCartes;
+        tmp = tblCartes[iTmp];
+        tblCartes[iTmp] = tblCartes[i];
+        tblCartes[i] = tmp;
     }
-
+    for (int i = 0; i < nbCartes; i++){
+        insererNoeud(&paquet, tblCartes[i], 0);
+    }
     return paquet;
 }
 
@@ -137,11 +151,13 @@ Carte* distribuerMain(Noeud** paquet){
 }
 
 int choixCarte (Joueur joueur, int nbCartes){
-    int rep;
-    printf("Joueur %d, quelle carte voulez vous jouer ? ");
-    scanf("%d",rep);
-    while (rep<0; rep>nbCartes){
-        printf("Joueur %d, entrez un nombre valide s'il vous plait !");  //boucle si le joueur entre un mauvais nb
+    int reponseJoueur;
+    printf("%s, quelle carte voulez vous jouer ? ", joueur.nom);
+    scanf("%d",reponseJoueur);
+    while (reponseJoueur<0 || reponseJoueur>nbCartes){
+        printf(" %s, entrez un nombre valide s'il vous plait !", joueur.nom);  //boucle si le joueur entre un mauvais nb
+
+
     }
 
     return Carte;
