@@ -51,26 +51,22 @@ void jouer(){
     _distributionPts();
 }
 
-<<<<<<< HEAD
-}
-
-
 Carte creerCarte(int numero){
     Carte carte;
     carte.numero = numero;
     if (carte.numero == 55){
-        carte.valeur=7
+        carte.valeur=7;
     }
     else if (carte.numero % 10 == 0){
-        carte.valeur=3
+        carte.valeur=3;
     }
     else if (carte.numero % 5 == 0){
-        carte.valeur=2 
+        carte.valeur=2;
     }
     else if (carte.numero % 10 == 0){
-        carte.valeur=5
+        carte.valeur=5;
     }
-    else carte.valeur=1
+    else carte.valeur=1;
     
     return carte;
 }  
