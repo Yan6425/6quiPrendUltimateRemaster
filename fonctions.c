@@ -13,7 +13,7 @@ typedef struct Carte{
 Carte creerCarte(int numero){
     Carte carte;
     carte.numero = numero;
-    if (carte.numero == 55){
+    if (carte.numero == 55){    //conditions pour donner le nombre de tête de taureau
         carte.valeur = 7;
     }
     else if (carte.numero % 10 == 0){
@@ -31,7 +31,7 @@ Carte creerCarte(int numero){
 }  
 
 
-typedef struct Joueur{
+typedef struct Joueur{ //structure joueur en fonction de son nom sa main et son nb de points
     char* nom;
     Carte* main;
     int nbPoints;
