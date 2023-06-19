@@ -150,15 +150,23 @@ Carte* distribuerMain(Noeud** paquet){
     return main;
 }
 
-int choixCarte (Joueur joueur, int nbCartes){
+Carte choixCarte (Joueur* joueur, int nbCartes){
     int reponseJoueur;
-    printf("%s, quelle carte voulez vous jouer ? ", joueur.nom);
-    scanf("%d",reponseJoueur);
-    while (reponseJoueur<0 || reponseJoueur>nbCartes){
-        printf(" %s, entrez un nombre valide s'il vous plait !", joueur.nom);  //boucle si le joueur entre un mauvais nb
-
-
+    Carte carte;
+    int j=0;
+    Carte* tabTmp = malloc((nbCartes-1) * sizeof(Carte));
+    do {
+        printf("%s, quelle carte voulez vous jouer ? ", joueur->nom);
+        scanf("%d",reponseJoueur);
+    }while (reponseJoueur<1 || reponseJoueur>nbCartes);
+    for (int i = 0; i < nbCartes; i++){
+        if (i != reponseJoueur - 1){
+            tabTmp[j] = joueur->main[i];
+            j++;
+        }
     }
-
-    return Carte;
-}
+    carte = joueur->main[reponseJoueur - 1];
+    realloc(joueur->main, (nbCartes - 1)*sizeof(Carte));
+    joueur->main = tabTmp;
+    return carte;
+} 
