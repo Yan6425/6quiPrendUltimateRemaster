@@ -53,7 +53,7 @@ typedef struct Noeud{
 } Noeud;
 
 
-Joueur* creerTblJoueurs(int nombreJoueurs){//mise en place d'un tableau pour rassembler tous les joueurs
+Joueur* creerTblJoueurs(int nombreJoueurs){//mise en place d'un tableau dynamique pour rassembler tous les joueurs
     Joueur* tblJoueur = malloc(nombreJoueurs * sizeof(Joueur));
     char* nom = malloc(100 * sizeof(char));
     for (int i = 0; i < nombreJoueurs; i++){
@@ -80,7 +80,7 @@ void lancerPartie(Joueur* tblJoueurs, int nombreJoueurs){
 
 
 int distribution(Noeud** plateau, Joueur* tblJoueurs, int nbJoueurs, int nbCartes){
-    Noeud* paquet = melangerCartes(int nbCartes);       //création du paquets
+    Noeud* paquet = melangerCartes(int nbCartes);       //création du paquets de cartes
     for (int i = 0; i < 4; i++){
         insererNoeud(&(plateau[i]), extraireNoeud(&paquet, 0)->carte, 0);
     }
@@ -135,7 +135,7 @@ Carte* distribuerMain(Noeud** paquet){
     Carte* main = malloc(10 * sizeof(Carte));
     Noeud* cartesTriees = (Noeud*)malloc(sizeof(Noeud));
     insererNoeud(&cartesTriees, extraireNoeud(paquet, 0)->carte, 0);
-    for (int i = 1; i < 10; i++){
+    for (int i = 1; i < 10; i++){ //boucle pour donner les cartes aux joueurs
         ///wip
     }
 
