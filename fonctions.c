@@ -67,20 +67,26 @@ typedef struct Noeud{
 } Noeud;
 
 
+
 void insererNoeud(Noeud** liste, Carte carte, int index){
     for (int i = 0; i < index; i++){
         *liste = (*liste)->suivant;
     }
-    Noeud* noeud = malloc(sizeof(Noeud));
+    Noeud* noeud = malloc(sizeof(Noeud));// Allocation de mémoire pour créer un nouveau noeud
+    
     noeud->carte = carte;
-    if (*liste != NULL){
+
+    if (*liste != NULL){// Si la liste n'est pas vide, on définit la taille du nouveau noeud à la taille du noeud précédent +1
+        
         noeud->tailleListe = (*liste)->tailleListe + 1;
     }
-    else noeud->tailleListe = 1;
+    else { //Sinon on definit la taille du noeud à 1
+        noeud->tailleListe = 1;
+    }
+
     noeud->suivant = *liste;
     *liste = noeud;
 }
-
 
 Noeud* extraireNoeud(Noeud** liste, int index){
     for (int i = 0; i < index; i++){
