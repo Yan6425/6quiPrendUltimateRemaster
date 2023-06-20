@@ -26,22 +26,11 @@ typedef struct Noeud{
 
 int main(){
     Noeud** plateau = malloc(4 * sizeof(malloc(sizeof(Noeud))));
-    Joueur* tblJoueurs = creerTblJoueurs(10);
-    for (int i = 0; i < 10; i++){
-        printf("Joueur %d : %s\n", i + 1, tblJoueurs[i].nom);
-    }
-    Noeud* test = NULL;
-    for (int i = 0; i < 4; i++){
-        insererNoeud(&test, creerCarte(i), 0);
-    }
-    affListe(test);
-    affListe(extraireNoeud(&test, 0));
+    Joueur* tblJoueurs = creerTblJoueurs(4);
     
-    distribution(plateau, tblJoueurs, 10, 104);
-    affPlateau(plateau);
-    for (int i = 0; i < 10; i++){
-        affMain(tblJoueurs[i].main, 10);
-    }
+    distribution(plateau, tblJoueurs, 4, 104);
+    affPrincipal(plateau, tblJoueurs, 4);
+    affMain(tblJoueurs[0].main, 10);
     
     
     return 0;
