@@ -91,11 +91,14 @@ void insererNoeud(Noeud** liste, Carte carte, int index){
 
 
 void triInsertion(Noeud** liste, Carte carte){
+    // Vérifie si la liste est vide ou si la carte doit être insérée avant le premier élément de la liste
     if (*liste == NULL || (*liste)->carte.numero > carte.numero) {  
+        // Appelle la fonction insererNoeud pour insérer la carte au début de la liste
         insererNoeud(liste, carte, 0);
     }
     else {
         (*liste)->tailleListe++;
+        // Appelle récursivement triInsertion avec le pointeur vers le prochain élément de la liste et la carte à insérer
         triInsertion(&((*liste)->suivant), carte);
     }
 }
