@@ -113,60 +113,76 @@ void distribution(Noeud** plateau, Joueur* tblJoueurs, int nbJoueurs, int nbCart
     }
 }
 
-Noeud* melangerCartes(int nbCartes){
-    srand(time(NULL));
+Noeud* melangerCartes(int nbCartes) {
+    srand(time(NULL)); // Initialiser le générateur de nombres aléatoires
+    // Allouer de la mémoire pour le paquet et les cartes
     Noeud* paquet = (Noeud*)malloc(sizeof(Noeud));
     Carte* tblCartes = malloc(nbCartes * sizeof(Carte));
     int iTmp;
-    Carte tmp;
+    Carte carteEchange;
+    // Créer un tableau de cartes avec des valeurs de 1 à nbCartes
     for (int i = 1; i <= nbCartes; i++){
         tblCartes[i] = creerCarte(i);
     }
+    // Mélanger les cartes en utilisant l'algorithme de Fisher-Yates
     for (int i = 0; i < nbCartes; i++){
+        // Générer un indice aléatoire
         iTmp = rand() % nbCartes;
-        tmp = tblCartes[iTmp];
+        // Échanger la carte courante avec la carte à l'indice aléatoire
+        carteEchange = tblCartes[iTmp];
         tblCartes[iTmp] = tblCartes[i];
-        tblCartes[i] = tmp;
+        tblCartes[i] = carteEchange;
     }
+    // Insérer les cartes mélangées dans le paquet sous forme de nœuds de liste chaînée
     for (int i = 0; i < nbCartes; i++){
         insererNoeud(&paquet, tblCartes[i], 0);
     }
-    return paquet;
+    return paquet; // Retourner le paquet mélangé
 }
 
-
-Carte* distribuerMain(Noeud** paquet){
-    Carte* main = malloc(10 * sizeof(Carte));
-    Noeud* cartesTriees = (Noeud*)malloc(sizeof(Noeud));
-    insererNoeud(&cartesTriees, extraireNoeud(paquet, 0)->carte, 0);
-    for (int i = 1; i < 10; i++){                   //boucle pour donner les cartes aux joueurs
-        ///wip
+Carte* creerMain(Noeud** paquet) {
+    Carte* main = malloc(10 * sizeof(Carte)); // Allouer de la mémoire pour la main qui contiendra 10 cartes
+    Noeud** cartesTriees = malloc(sizeof(Noeud*));  // Allouer de la mémoire pour cartesTriees
+    *cartesTriees = NULL;  // Initialiser cartesTriees à NULL
+    // Extraire les 10 premières cartes du paquet et les trier en utilisant l'algorithme de tri par insertion
+    for (int i = 0; i < 10; i++) {
+        triInsertion(cartesTriees, extraireNoeud(paquet, 0), NULL);
     }
-
-    return main;
+    // Extraire les cartes triées dans la main
+    for (int i = 0; i < 10; i++) {
+        main[i] = extraireNoeud(cartesTriees, 0);
+    }
+    return main; // Retourner la main créée
 }
 
-Carte choixCarte (Joueur* joueur, int nbCartes){
-    int reponseJoueur;
+Carte choixCarte(Joueur* joueur, int nbCartes) {
     Carte carte;
-    int j=0;
-    Carte* tabTmp = malloc((nbCartes-1) * sizeof(Carte));
-    do {
-        printf("%s, quelle carte voulez vous jouer ? ", joueur->nom);
-        scanf("%d",reponseJoueur);
-    }while (reponseJoueur<1 || reponseJoueur>nbCartes);     //test pour s'assurer que le joueur entre bien un nombre correct
-    for (int i = 0; i < nbCartes; i++){
-        if (i != reponseJoueur - 1){
-            tabTmp[j] = joueur->main[i];
-            j++;
+    Carte* tabTmp = malloc((nbCartes - 1) * sizeof(Carte)); // Allouer de la mémoire pour le tableau temporaire
+    if (nbCartes < 1) {
+        int reponseJoueur;
+        int j = 0;
+        // Demander au joueur quelle carte il souhaite jouer
+        do {
+            printf("%s, quelle carte voulez-vous jouer ? ", joueur->nom);
+            scanf("%d", &reponseJoueur);
+        } while (reponseJoueur < 1 || reponseJoueur > nbCartes); // Vérifier que le joueur entre un nombre correct
+        // Copier les cartes restantes dans le tableau temporaire
+        for (int i = 0; i < nbCartes; i++) {
+            if (i != reponseJoueur - 1) {
+                tabTmp[j] = joueur->main[i];
+                j++;
+            }
         }
+        carte = joueur->main[reponseJoueur - 1]; // Stocker la carte choisie
+    } else {
+        carte = joueur->main[0]; // S'il n'y a qu'une seule carte, la choisir directement
     }
-    carte = joueur->main[reponseJoueur - 1];
-    realloc(joueur->main, (nbCartes - 1)*sizeof(Carte));
-    joueur->main = tabTmp;
-    return carte;
+    free(joueur->main); // Libérer la mémoire occupée par l'ancien tableau de cartes
+    joueur->main = realloc(joueur->main, (nbCartes - 1) * sizeof(Carte)); // Réallouer de la mémoire pour le nouveau tableau de cartes
+    joueur->main = tabTmp; // Affecter le tableau temporaire au tableau de cartes du joueur
+    free(tabTmp); // Libérer la mémoire occupée par le tableau temporaire
+    return carte; // Retourner la carte choisie
 }
-
 
 void affPlateau(Noeud** plateau){
     for (int i = 0; i < 4; i++){
