@@ -65,18 +65,16 @@ typedef struct Noeud{
     Carte carte;
     int tailleListe;
     struct Noeud* suivant;
-    Joueur* joueur;
 } Noeud;
 
 
-void insererNoeud(Noeud** liste, Carte carte, Joueur* joueur, int index){
+void insererNoeud(Noeud** liste, Carte carte, int index){
     for (int i = 0; i < index; i++){
         (*liste)->tailleListe++;
         liste = &((*liste)->suivant);
     }
     Noeud* noeud = malloc(sizeof(Noeud));
     noeud->carte = carte;
-    noeud->joueur = joueur;
     if (*liste != NULL){
         noeud->tailleListe = (*liste)->tailleListe + 1;
     }
@@ -86,13 +84,13 @@ void insererNoeud(Noeud** liste, Carte carte, Joueur* joueur, int index){
 }
 
 
-void triInsertion(Noeud** liste, Carte carte, Joueur* joueur){
+void triInsertion(Noeud** liste, Carte carte){
     if (*liste == NULL || (*liste)->carte.numero > carte.numero) {  
-        insererNoeud(liste, carte, joueur, 0);
+        insererNoeud(liste, carte, 0);
     }
     else {
         (*liste)->tailleListe++;
-        triInsertion(&((*liste)->suivant), carte, NULL);
+        triInsertion(&((*liste)->suivant), carte);
     }
 }
 
@@ -130,35 +128,43 @@ void lancerPartie(Joueur* tblJoueurs, int nbJoueurs, int nbCartes){
     distribution(plateau, tblJoueurs, nbJoueurs, nbCartes);
     
     for (int i = 0; i < 10; i++){
-        affPrincipal(plateau, tblJoueurs, nbJoueurs);
         int tailleMain = 10 - i;
         Noeud* listeAttente = NULL;
         
         for (int j = 0; j < nbJoueurs; j++){
-            Joueur joueur = tblJoueurs[i];
+            affPrincipal(plateau, tblJoueurs, nbJoueurs);
+            Joueur joueur = tblJoueurs[j];
             printf("%s appuie sur entrée quand tu es prêt à jouer.", joueur.nom);
-            getchar():
+            getchar();
+            effacerBuffer();
             affPrincipal(plateau, tblJoueurs, nbJoueurs);
             affMain(joueur.main, tailleMain);
-            triInsertion(&listeAttente, choixCarte(&joueur, tailleMain), &joueur);
+            triInsertion(&listeAttente, choixCarte(&joueur, tailleMain));
         }
 
         for (int j = 0; j < nbJoueurs; j++){
+            Joueur joueur = tblJoueurs[j];
             affPrincipal(plateau, tblJoueurs, nbJoueurs);
             affLstAttente(listeAttente, nbJoueurs);
             nettoyerPlateau(plateau);
             placerCarte(plateau, extraireNoeud(&listeAttente, 0));
-            calcScore(plateau);
-            sleep(0.7);
+            calcScore(plateau, &joueur);
+            sleep(1);
         }
     }
+}
+
+
+void effacerBuffer(){
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
 }
 
 
 void distribution(Noeud** plateau, Joueur* tblJoueurs, int nbJoueurs, int nbCartes){
     Noeud* paquet = melangerCartes(nbCartes);       //création du paquets de cartes
     for (int i = 0; i < 4; i++){
-        insererNoeud(&(plateau[i]), extraireNoeud(&paquet, 0), NULL, 0);
+        insererNoeud(&(plateau[i]), extraireNoeud(&paquet, 0), 0);
     }
     for (int i = 0; i < nbJoueurs; i++){
         tblJoueurs[i].main = creerMain(&paquet);
@@ -182,7 +188,7 @@ Noeud* melangerCartes(int nbCartes){
         tblCartes[i] = carteEchange;
     }
     for (int i = 0; i < nbCartes; i++){
-        insererNoeud(&paquet, tblCartes[i], NULL, 0);
+        insererNoeud(&paquet, tblCartes[i], 0);
     }
     return paquet;
 }
@@ -193,7 +199,7 @@ Carte* creerMain(Noeud** paquet) {
     Noeud** cartesTriees = malloc(sizeof(Noeud*));  // Allouer de la mémoire pour cartesTriees
     *cartesTriees = NULL;  // Initialiser cartesTriees à NULL
     for (int i = 0; i < 10; i++) {
-        triInsertion(cartesTriees, extraireNoeud(paquet, 0), NULL);
+        triInsertion(cartesTriees, extraireNoeud(paquet, 0));
     }
     for (int i = 0; i < 10; i++) {
         main[i] = extraireNoeud(cartesTriees, 0);
@@ -204,27 +210,24 @@ Carte* creerMain(Noeud** paquet) {
 
 Carte choixCarte (Joueur* joueur, int nbCartes){
     Carte carte;
-    Carte* tabTmp = malloc((nbCartes-1) * sizeof(Carte));
-    if (nbCartes < 1){
-        int reponseJoueur;
-        int j=0;
-        do {
-            printf("%s, quelle carte voulez vous jouer ? ", joueur->nom);
-            scanf("%d", &reponseJoueur);
-        }while (reponseJoueur<1 || reponseJoueur>nbCartes);     //test pour s'assurer que le joueur entre bien un nombre correct
-        for (int i = 0; i < nbCartes; i++){
-            if (i != reponseJoueur - 1){
-                tabTmp[j] = joueur->main[i];
-                j++;
-            }
-        }
-        carte = joueur->main[reponseJoueur - 1];
-    } else carte = joueur->main[0];
-    free(joueur->main);
-    joueur->main = realloc(joueur->main, (nbCartes - 1)*sizeof(Carte));
-    joueur->main = tabTmp;
-    free(tabTmp);
+    int reponseJoueur;
+    do {
+        printf("%s, quelle carte veux-tu jouer ? ", joueur->nom);
+        scanf("%d", &reponseJoueur);
+        effacerBuffer();
+    } while (reponseJoueur < 1 || reponseJoueur > nbCartes);     //test pour s'assurer que le joueur entre bien un nombre correct
+    carte = joueur->main[reponseJoueur - 1];
+    reduireMain(joueur->main, reponseJoueur, nbCartes);
+
     return carte;
+}
+
+
+void reduireMain(Carte* main, int reponseJoueur, int nbCartes){
+    for (int i = reponseJoueur; i < nbCartes; i++){
+        main[i-1] = main[i]; 
+    }
+    main = realloc(main, (nbCartes - 1) * sizeof(Carte));
 }
 
 
@@ -239,20 +242,20 @@ void nettoyerPlateau(Noeud** plateau){
 
 
 void placerCarte(Noeud** plateau, Carte carte){
-    int iMin = 0;
+    int iMax = 0;
     for (int i = 1; i <= 4; i++){
-        if (plateau[i - 1]->carte.numero < carte.numero && (iMin == 0 || plateau[iMin - 1]->carte.numero > plateau[i - 1]->carte.numero)){
-            iMin = i;
+        if (plateau[i - 1]->carte.numero < carte.numero && (iMax == 0 || plateau[iMax - 1]->carte.numero < plateau[i - 1]->carte.numero)){
+            iMax = i;
         }
     }
-    insererNoeud(&(plateau[iMin - 1]), carte, NULL, 0);
+    insererNoeud(&(plateau[iMax - 1]), carte, 0);
 }
 
 
-void calcScore(Noeud** plateau){
+void calcScore(Noeud** plateau, Joueur* joueur){
     for (int i = 0; i < 4; i++){
         if (plateau[i]->tailleListe > 5){
-            plateau[i]->joueur->score += scoreListe(plateau[i]);
+            joueur->score += scoreListe(plateau[i]);
         }
     }
 }
@@ -303,18 +306,32 @@ void affMain(Carte* main, int nbCartes){
     for (int i = 0; i < 8; i++){
         printf("%s\n", strCartes[i]);
     }
+    printf("                    ");
+    for (int i = 1; i <= nbCartes; i++){
+        printf("    %2d       ", i);
+    }
+    printf("\n");
 }
 
 
 void affLstAttente(Noeud* listeAttente, int nbJoueurs){
-    int tailleLigne = 13 * nbJoueurs;
+    int tailleLigne = 20 + 13 * nbJoueurs;
     char** strCartes = malloc(8 * sizeof(char*));
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < 8; i++){
+        printf("\n");
         strCartes[i] = malloc(tailleLigne * sizeof(char));
     }
-    remplirLigne(listeAttente, strCartes);
+    remplirStrAttente(listeAttente, strCartes);
     for (int i = 0; i < 8; i++){
         printf("%s\n", strCartes[i]);
+    }
+}
+
+
+void remplirStrAttente(Noeud* ligne, char** strCartes){
+    catStrCartes(strCartes, ligne->carte);
+    if (ligne->suivant != NULL){
+        remplirLigne(ligne->suivant, strCartes);
     }
 }
 
