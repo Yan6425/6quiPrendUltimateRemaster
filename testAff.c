@@ -1,25 +1,46 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
 
 typedef struct Carte{
     int numero;     //numéro carte de 1 à 104
     int valeur;     //nombre tête de boeuf de 1 à 7
 } Carte;
 
+
 typedef struct Noeud{
     Carte carte;
+    int tailleListe;
     struct Noeud* suivant;
 } Noeud;
+
 
 void insererNoeud(Noeud** liste, Carte carte, int index){
     for (int i = 0; i < index; i++){
         liste = &((*liste)->suivant);
     }
-    Noeud* noeud = (Noeud*)malloc(sizeof(Noeud));
+    Noeud* noeud = malloc(sizeof(Noeud));
     noeud->carte = carte;
+    if (*liste != NULL){
+        noeud->tailleListe = (*liste)->tailleListe + 1;
+    }
+    else noeud->tailleListe = 1;
     noeud->suivant = *liste;
-    liste = &noeud;
+    *liste = noeud;
 }
+
+
+void affListe(Noeud* liste){
+    if (liste->suivant != NULL){
+        affListe(liste->suivant);
+    }
+    if (liste->suivant == NULL){
+        printf("\n");
+    }
+    printf("noeud.carte.numero = %d, noeud.carte.valeur = %d, noeud.tailleListe = %d\n", liste->carte.numero, liste->carte.valeur, liste->tailleListe);
+}
+
 
 Carte creerCarte(int numero){
     Carte carte;
@@ -33,13 +54,14 @@ Carte creerCarte(int numero){
     else if (carte.numero % 5 == 0){
         carte.valeur = 2; 
     }
-    else if (carte.numero % 10 == 0){
+    else if (carte.numero % 11 == 0){
         carte.valeur = 5;
     }
     else carte.valeur = 1;
     
     return carte;
 }  
+
 
 char** creerTdb(int valeur){
     char** tdb = malloc(2 * sizeof(malloc(5 * sizeof(char))));
@@ -67,42 +89,57 @@ char** creerTdb(int valeur){
     return tdb;
 }
 
-char** affCarte(Carte carte){
-    char** tdb = creerTdb(carte.valeur);
-    char** cartes
-printf(" _________\n"
-"|         |\n"
-"|%s|\n"
-"|%s|\n"
-"|         |\n"
-"|   %3d   |\n"
-"|         |\n"
-" ‾‾‾‾‾‾‾‾‾ \n", tdb[0], tdb[1], carte.numero); 
+
+char* stringNum(int numero){
+    char* strNum = malloc(4 * sizeof(char));
+    sprintf(strNum, "%*s%d%*s", !(numero / 100), "", numero, !(numero / 10), "");
+
+    return strNum;
 }
 
-void remplirLigne(Noeud** ligne, char** cartes, int nbCartes){
-    if ((*ligne)->suivant != NULL){
-        remplirLigne(&((*ligne)->suivant), cartes, nbCartes - 1);
-    }
-    char** tdb = creerTdb((*ligne)->carte.valeur);
-    cartes[0][(nbCartes - 1 )* 13] = " _________   ";
-    cartes[1][(nbCartes - 1 )* 13] = "|         |  ";
-    cartes[2][(nbCartes - 1 )* 13] = "|" + tdb[0] + "|  ";
-    cartes[3][(nbCartes - 1 )* 13] = "|" + tdb[1] + "|  ";
-    cartes[4][(nbCartes - 1 )* 13] = "|         |  ";
-    cartes[5][(nbCartes - 1 )* 13] = "|   " + "   |  ";
-    cartes[6][(nbCartes - 1 )* 13] = "|         |  ";
-    cartes[7][(nbCartes - 1 )* 13] = " ‾‾‾‾‾‾‾‾‾   ";
+
+void catStrCartes(char** strCartes, Carte carte){
+    char** tdb = creerTdb(carte.valeur);
+    strcat(strCartes[0], " ---------   ");
+    strcat(strCartes[1], "|         |  ");
+    strcat(strCartes[2], "|"); strcat(strCartes[2], tdb[0]); strcat(strCartes[2], "|  ");
+    strcat(strCartes[3], "|"); strcat(strCartes[3], tdb[1]); strcat(strCartes[3], "|  ");
+    strcat(strCartes[4], "|         |  ");
+    strcat(strCartes[5], "|   "); strcat(strCartes[5], stringNum(carte.numero)); strcat(strCartes[5], "   |  ");
+    strcat(strCartes[6], "|         |  ");
+    strcat(strCartes[7], " ---------   ");
 }
+
+
+void remplirLigne(Noeud** ligne, char** strCartes){
+    if ((*ligne)->suivant != NULL){
+        remplirLigne(&((*ligne)->suivant), strCartes);
+    }
+    catStrCartes(strCartes, (*ligne)->carte);
+}
+
 
 void affLigne(Noeud** ligne){
-    int nbCartes = sizeof(numCartes[i]) / sizeof(numCartes[i][0]);
-    char** cartes = malloc(8 * sizeof(malloc(13 * nbCartes * sizeof(char))));
-    remplirLigne(ligne, cartes, nbCartes);
+    int tailleLigne = 13 * (*ligne)->tailleListe;
+    char** strCartes = malloc(8 * sizeof(char*));
+    for (int i = 0; i < 8; i++) {
+        strCartes[i] = malloc(tailleLigne * sizeof(char));
+    }
+    remplirLigne(ligne, strCartes);
     for (int i = 0; i < 8; i++){
-        printf("%s", cartes[i]);
+        for (int j = 0; j < tailleLigne; j++){
+            if (j == 65){
+                printf("\x1b[31m");
+            }
+            printf("%c", strCartes[i][j]);
+        }
+        if (tailleLigne > 65){
+            printf("\x1b[0m");
+        }
+        printf("\n");
     }
 }
+
 
 void affPlateau(Noeud** plateau){
     for (int i = 0; i < 4; i++){
@@ -110,16 +147,68 @@ void affPlateau(Noeud** plateau){
     }
 }
 
+
+typedef struct Joueur{
+    char* nom;
+    Carte* main;
+    int nbPoints;
+} Joueur;
+
+
+Joueur creerJoueur(char* nom){
+    Joueur joueur;
+    joueur.nom = nom;
+    joueur.main = malloc(10 * sizeof(Carte));
+    joueur.nbPoints = 0;
+    return joueur;
+}
+
+
+void affMain(Carte* main, int nbCartes){
+    char** strCartes = malloc(8 * sizeof(char*));
+    for (int i = 0; i < 8; i++) {
+        strCartes[i] = malloc(20 + 13 * nbCartes * sizeof(char));
+        sprintf(strCartes[i], "%*s", 20, "");
+    }
+    for (int i = 0; i < nbCartes; i++){
+        catStrCartes(strCartes, main[i]);
+    }
+    for (int i = 0; i < 8; i++){
+        printf("%s\n", strCartes[i]);
+    }
+}
+
+
 int main(){
-    Noeud** plateau = malloc(4 * sizeof( (Noeud*)malloc(sizeof(Noeud)) ));
-    int numCartes[4][5] = {{5, 12, 45, 68, 19}, {35, 7}, {37, 12, 36, 104}, {14}};
+    printf("\x1b[2J\x1b[H");
+
+    Noeud** plateau = (Noeud**)malloc(4 * sizeof(struct Node*));
+    int numCartes[4][7] = {{5, 12, 45, 55, 10, 1, 80}, {35, 7}, {30, 12, 33, 104}, {14}};
+    int lenTbl[4] = {7, 2, 4, 1};
     for (int i = 0; i < 4; i++){
-        Noeud* ligne = plateau[i];
-        for (int j = 0; j < (sizeof(numCartes[i]) / sizeof(numCartes[i][0])); j++){
-            insererNoeud(&ligne, creerCarte(numCartes[i][j]), 0);
+        Noeud** ligne = &(plateau[i]);
+        for (int j = 0; j < lenTbl[i]; j++){
+            insererNoeud(ligne, creerCarte(numCartes[i][j]), 0);
         }
     }
+
     affPlateau(plateau);
+
+    for (int i = 0; i < 8; i++){
+        printf("\n");
+    }
+
+    Joueur Bob = creerJoueur("Bob");
+    int nbCartes = 10;
+    for (int i = 0; i < nbCartes; i++){
+        Bob.main[i] = creerCarte(numCartes[0][i]);
+    }
+
+    affMain(Bob.main, nbCartes);
+    
+    for (int i = 0; i < 8; i++){
+        printf("\n");
+    }
 
     return 0;
 }
