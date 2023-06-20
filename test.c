@@ -9,7 +9,7 @@ typedef struct Carte{
 } Carte;
 
 
-typedef struct Joueur{
+typedef struct Joueur{              //structure joueur en fonction de son nom sa main et son nb de points
     char* nom;
     Carte* main;
     int nbPoints;
@@ -18,16 +18,19 @@ typedef struct Joueur{
 
 typedef struct Noeud{
     Carte carte;
-    Noeud* suivant;
+    int tailleListe;
+    struct Noeud* suivant;
 } Noeud;
 
 
 int main(){
-    Joueur joueur = creerJoueur("Bob");
-    assert(joueur.nom = "Bob");
-    assert(joueur.nbPoints = 0);
-    assert(joueur.main = Carte*);
-    assert(sizeof(joueur.main) = 10 * sizeof(Carte));
+    Noeud** plateau = malloc(4 * sizeof(malloc(sizeof(Noeud))));
+    Joueur* tblJoueurs = creerTblJoueurs(4);
+    
+    distribution(plateau, tblJoueurs, 4, 104);
+    affPrincipal(plateau, tblJoueurs, 4);
+    affMain(tblJoueurs[0].main, 10);
+    
     
     return 0;
 }

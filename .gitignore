@@ -1,2 +1,2 @@
-fonctions.o
-main.o
+*.o
+.vscode
