@@ -17,7 +17,7 @@ int main(){
         lancerPartie(tblJoueurs, nbJoueurs, nbCartes);
         
         do{
-            printf("Voulez-vous relancer une partie ? (y/n) ");
+            printf("Voulez-vous relancer une manche ? (y/n) ");
             scanf("%s", reponseUtilisateur);
             effacerBuffer();
         } while (strcmp(reponseUtilisateur, "y") && strcmp(reponseUtilisateur, "n"));
