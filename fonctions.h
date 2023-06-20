@@ -7,7 +7,7 @@ typedef struct Joueur Joueur; // sert à modéliser un joueur ainsi que son nomb
 Joueur creerJoueur(char* nom);// cree un joueur avec un nom, une main et un nombre de carte
 Joueur* creerTblJoueurs(int nbJoueurs);//rassemble tous les joueurs dans un tableau
 typedef struct Noeud Noeud; // sert a modéliser un noeud d'une liste chainée 
-void insererNoeud(Noeud** liste, Carte carte, int index);
+void insererNoeud(Noeud** liste, Carte carte, int index);//création et définition de la taille des noeuds 
 Noeud* extraireNoeud(Noeud** liste, int index);
 void affListe(Noeud* liste);
 
