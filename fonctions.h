@@ -9,8 +9,8 @@ Joueur* creerTblJoueurs(int nbJoueurs);//rassemble tous les joueurs dans un tabl
 typedef struct Noeud Noeud; // sert a modéliser un noeud d'une liste chainée 
 void insererNoeud(Noeud** liste, Carte carte, int index);//création et définition de la taille des noeuds 
 void triInsertion(Noeud** liste, Carte carte);
-Carte extraireNoeud(Noeud** liste, int index);
-void affListe(Noeud* liste);
+Carte extraireNoeud(Noeud** liste, int index);// permet d'extraire un noeud d'une liste chainée
+void affListe(Noeud* liste);//afficher le numéro la valeur et la taille de la liste
 
 
 void reglages();// sert à parametrer le jeu
