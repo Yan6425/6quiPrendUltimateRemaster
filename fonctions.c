@@ -141,7 +141,7 @@ void distribution(Noeud** plateau, Joueur* tblJoueurs, int nbJoueurs, int nbCart
     for (int i = 0; i < 4; i++){
         insererNoeud(&(plateau[i]), extraireNoeud(&paquet, 0)->carte, 0);
     }
-    for (int i = 0; i < nbJoueurs; i++){
+    for (int i = 0; i < nbJoueurs; i++){//Distribu les cartes aux joueurs
         tblJoueurs[i].main = creerMain(&paquet);
     }
 }
@@ -157,7 +157,7 @@ Noeud* melangerCartes(int nbCartes) {
     for (int i = 1; i <= nbCartes; i++){
         tblCartes[i] = creerCarte(i);
     }
-    // Mélanger les cartes en utilisant l'algorithme de Fisher-Yates
+    // Mélanger les cartes
     for (int i = 0; i < nbCartes; i++){
         // Générer un indice aléatoire
         iTmp = rand() % nbCartes;
@@ -260,7 +260,7 @@ void affLigne(Noeud** ligne){
         for (int j = 0; j < tailleLigne; j++){
             // Vérification si on atteint la position 65, qui correspond à la position où une carte doit être mise en rouge
             if (j == 65){
-                printf("\x1b[31m"); // Utilisation de la séquence d'échappement pour afficher le texte en rouge
+                printf("\x1b[31m"); //Afficher le texte en rouge
             }
             printf("%c", strCartes[i][j]); // Affichage du caractère correspondant à la position (i, j) de la ligne
         }    

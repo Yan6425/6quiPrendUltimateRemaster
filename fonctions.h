@@ -14,9 +14,9 @@ void affListe(Noeud* liste);//afficher le numéro la valeur et la taille de la l
 
 void reglages();// sert à parametrer le jeu
 void lancerPartie(Joueur* tblJoueurs, int nbJoueurs, int nbCartes);//mets en place le plateau et la distribution
-void distribution(Noeud** plateau, Joueur* tblJoueurs, int nbJoueurs, int nbCartes);
-Noeud* melangerCartes(int nbCartes);
-Carte* creerMain(Noeud** paquet);
+void distribution(Noeud** plateau, Joueur* tblJoueurs, int nbJoueurs, int nbCartes);//Distribuer les cartes aux joueurs
+Noeud* melangerCartes(int nbCartes);//mélanger les cartes dans le paquets avec un tri aléatoire
+Carte* creerMain(Noeud** paquet);//Extraire 10 cartes du paquets pour créer la main du joueur
 void triInsertion(Noeud** liste, Noeud* nouvNoeud);
 Carte choixCarte(Joueur* joueur, int nbCartes);//le joueur choisi parmis ses 10 cartes en main
 void comparaisons();
