@@ -8,8 +8,8 @@ Joueur creerJoueur(char* nom);// cree un joueur avec un nom, une main et un nomb
 Joueur* creerTblJoueurs(int nbJoueurs);//rassemble tous les joueurs dans un tableau
 typedef struct Noeud Noeud; // sert a modéliser un noeud d'une liste chainée 
 void insererNoeud(Noeud** liste, Carte carte, int index);//création et définition de la taille des noeuds 
-Noeud* extraireNoeud(Noeud** liste, int index);
-void affListe(Noeud* liste);
+Noeud* extraireNoeud(Noeud** liste, int index);// permet d'extraire un noeud d'une liste chainée
+void affListe(Noeud* liste);//afficher le numéro la valeur et la taille de la liste
 
 
 void reglages();// sert à parametrer le jeu

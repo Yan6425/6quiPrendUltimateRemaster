@@ -92,24 +92,36 @@ Noeud* extraireNoeud(Noeud** liste, int index){
     for (int i = 0; i < index; i++){
         *liste = (*liste)->suivant;
     }
+    
+    // Le pointeur noeud pointe vers le noeud à extraire
     Noeud* noeud = *liste;
+    
+    // Le pointeur de liste est mis à jour pour pointer vers le noeud suivant, sautant ainsi le noeud à extraire
     *liste = (*liste)->suivant;
+    
+    // La référence suivante du noeud extrait est définie comme NULL pour le détacher de la liste
     noeud->suivant = NULL;
+    
+    // La taille du noeud extrait est réinitialisée à 1
     noeud->tailleListe = 1;
-
     return noeud;
 }
 
 
 void affListe(Noeud* liste){
+    //Si le noeud actuel a un noeud suivant on fait un appel récursif pour afficher les noeuds suivants
     if (liste->suivant != NULL){
         affListe(liste->suivant);
     }
-    if (liste->suivant == NULL){
+
+    if (liste->suivant == NULL){//Si le noeud est le dernier noeud de la liste on fait un retour à la ligne 
         printf("\n");
     }
+    
+    // Affiche les informations du noeud actuel (carte.numero, carte.valeur, tailleListe)
     printf("noeud.carte.numero = %d, noeud.carte.valeur = %d, noeud.tailleListe = %d\n", liste->carte.numero, liste->carte.valeur, liste->tailleListe);
 }
+
 
 
 
