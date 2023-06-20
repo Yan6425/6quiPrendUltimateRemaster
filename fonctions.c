@@ -69,38 +69,28 @@ typedef struct Noeud{
 } Noeud;
 
 
-
 void insererNoeud(Noeud** liste, Carte carte, int index){
     for (int i = 0; i < index; i++){
         (*liste)->tailleListe++;
         liste = &((*liste)->suivant);
     }
-    Noeud* noeud = malloc(sizeof(Noeud));// Allocation de mémoire pour créer un nouveau noeud
-    
+    Noeud* noeud = malloc(sizeof(Noeud));
     noeud->carte = carte;
-
-    if (*liste != NULL){// Si la liste n'est pas vide, on définit la taille du nouveau noeud à la taille du noeud précédent +1
-        
+    if (*liste != NULL){
         noeud->tailleListe = (*liste)->tailleListe + 1;
     }
-    else { //Sinon on definit la taille du noeud à 1
-        noeud->tailleListe = 1;
-    }
-
+    else noeud->tailleListe = 1;
     noeud->suivant = *liste;
     *liste = noeud;
 }
 
 
 void triInsertion(Noeud** liste, Carte carte){
-    // Vérifie si la liste est vide ou si la carte doit être insérée avant le premier élément de la liste
     if (*liste == NULL || (*liste)->carte.numero > carte.numero) {  
-        // Appelle la fonction insererNoeud pour insérer la carte au début de la liste
         insererNoeud(liste, carte, 0);
     }
     else {
         (*liste)->tailleListe++;
-        // Appelle récursivement triInsertion avec le pointeur vers le prochain élément de la liste et la carte à insérer
         triInsertion(&((*liste)->suivant), carte);
     }
 }
@@ -111,10 +101,7 @@ Carte extraireNoeud(Noeud** liste, int index){
         (*liste)->tailleListe--;
         liste = &((*liste)->suivant);
     }
-    // Le pointeur de liste est mis à jour pour pointer vers le noeud suivant, sautant ainsi le noeud à extraire
     Carte carte = (*liste)->carte;
-    
-    // Le pointeur de liste est mis à jour pour pointer vers le noeud suivant, sautant ainsi le noeud à extraire
     *liste = (*liste)->suivant;
 
     return carte;
@@ -122,16 +109,36 @@ Carte extraireNoeud(Noeud** liste, int index){
 
 
 void affListe(Noeud* liste){
-    //Si le noeud actuel a un noeud suivant on fait un appel récursif pour afficher les noeuds suivants
     if (liste->suivant != NULL){
         affListe(liste->suivant);
     }
-    // Affiche les informations du noeud actuel (carte.numero, carte.valeur, tailleListe)
+    if (liste->suivant == NULL){
+        printf("\n");
+    }
     printf("noeud.carte.numero = %d, noeud.carte.valeur = %d, noeud.tailleListe = %d\n", liste->carte.numero, liste->carte.valeur, liste->tailleListe);
 }
 
 
-void reglages(){
+void reglages(int* nbJoueurs, int* nbCartes){
+    int reponse1;
+    do {
+        printf("Combien de joueurs êtes-vous ? (jouable de 2 à 10 joueurs) ");
+        scanf("%d", &reponse1);
+        effacerBuffer();
+    } while (reponse1 < 2 || reponse1 > 10); 
+    *nbJoueurs = reponse1;
+    char* reponse2 = malloc(100 * sizeof(char));
+    do {
+        printf("Voulez-vous jouer avec le nombre maximum de cartes ? (y/n) ");
+        scanf("%s", reponse2);
+        effacerBuffer();
+    } while (strcmp(reponse2, "y") && strcmp(reponse2, "n")); 
+    if (!strcmp(reponse2, "y")){
+        *nbCartes = 104;
+        printf("%d", strcmp(reponse2, "y"));
+    }
+    else *nbCartes = 4 + *nbJoueurs * 10;
+    printf("Vous jouerez avec %d cartes sur 104.\n", *nbCartes);
 }
 
 
@@ -163,6 +170,7 @@ void lancerPartie(Joueur* tblJoueurs, int nbJoueurs, int nbCartes){
             sleep(1);
         }
     }
+    affPrincipal(plateau, tblJoueurs, nbJoueurs);
 }
 
 
@@ -177,36 +185,31 @@ void distribution(Noeud** plateau, Joueur* tblJoueurs, int nbJoueurs, int nbCart
     for (int i = 0; i < 4; i++){
         insererNoeud(&(plateau[i]), extraireNoeud(&paquet, 0), 0);
     }
-    for (int i = 0; i < nbJoueurs; i++){//Distribu les cartes aux joueurs
+    for (int i = 0; i < nbJoueurs; i++){
         tblJoueurs[i].main = creerMain(&paquet);
     }
 }
 
-Noeud* melangerCartes(int nbCartes) {
-    srand(time(NULL)); // Initialiser le générateur de nombres aléatoires
-    // Allouer de la mémoire pour le paquet et les cartes
+
+Noeud* melangerCartes(int nbCartes){
+    srand(time(NULL));
     Noeud* paquet = malloc(sizeof(Noeud));
     Carte* tblCartes = malloc(nbCartes * sizeof(Carte));
     int indexEchange;
     Carte carteEchange;
-    // Créer un tableau de cartes avec des valeurs de 1 à nbCartes
-    for (int i = 1; i <= nbCartes; i++){
-        tblCartes[i] = creerCarte(i);
-    }
-    // Mélanger les cartes
     for (int i = 0; i < nbCartes; i++){
-        // Générer un indice aléatoire
+        tblCartes[i] = creerCarte(i + 1);
+    }
+    for (int i = 0; i < nbCartes; i++){
         indexEchange = rand() % nbCartes;
-        // Échanger la carte courante avec la carte à l'indice aléatoire
         carteEchange = tblCartes[indexEchange];
         tblCartes[indexEchange] = tblCartes[i];
         tblCartes[i] = carteEchange;
     }
-    // Insérer les cartes mélangées dans le paquet sous forme de nœuds de liste chaînée
     for (int i = 0; i < nbCartes; i++){
         insererNoeud(&paquet, tblCartes[i], 0);
     }
-    return paquet; // Retourner le paquet mélangé
+    return paquet;
 }
 
 
@@ -328,24 +331,23 @@ void affPlateau(Noeud** plateau){
 
 
 void affMain(Carte* main, int nbCartes){
-    // Allocation dynamique du tableau de pointeurs de chaînes de caractères pour stocker les lignes d'affichage des cartes
     char** strCartes = malloc(8 * sizeof(char*));
-    // Boucle pour initialiser chaque élément du tableau strCartes
     for (int i = 0; i < 8; i++) {
-        // Allocation dynamique de mémoire pour chaque ligne en fonction du nombre de cartes
         printf("\n");
-        strCartes[i] = malloc(20 + 13 * nbCartes * sizeof(char));      
-        // Utilisation de sprintf pour initialiser chaque ligne avec des espaces vides
+        strCartes[i] = malloc(20 + 13 * nbCartes * sizeof(char));
         sprintf(strCartes[i], "%*s", 20, "");
     }
-    // Boucle pour concaténer les informations de chaque carte à chaque ligne d'affichage
     for (int i = 0; i < nbCartes; i++){
         catStrCartes(strCartes, main[i]);
     }
-    // Boucle pour afficher chaque ligne d'affichage des cartes
     for (int i = 0; i < 8; i++){
         printf("%s\n", strCartes[i]);
     }
+    printf("                    ");
+    for (int i = 1; i <= nbCartes; i++){
+        printf("    %2d       ", i);
+    }
+    printf("\n");
 }
 
 
@@ -372,30 +374,23 @@ void remplirStrAttente(Noeud* ligne, char** strCartes){
 
 
 void affLigne(Noeud* ligne){
-    // Calcul de la taille de la ligne en fonction du nombre de cartes dans la liste de noeuds
     int tailleLigne = 13 * ligne->tailleListe;
-    // Allocation dynamique du tableau de pointeurs de chaînes de caractères pour stocker les lignes d'affichage des cartes
     char** strCartes = malloc(8 * sizeof(char*));
-    // Boucle pour allouer dynamiquement de la mémoire pour chaque ligne d'affichage
     for (int i = 0; i < 8; i++) {
         strCartes[i] = malloc(tailleLigne * sizeof(char));
     }
-    // Appel de la fonction remplirLigne pour remplir les lignes d'affichage avec les informations des cartes
     remplirLigne(ligne, strCartes);
-    // Boucle pour afficher chaque ligne d'affichage des cartes
     for (int i = 0; i < 8; i++){
         for (int j = 0; j < tailleLigne; j++){
-            // Vérification si on atteint la position 65, qui correspond à la position où une carte doit être mise en rouge
             if (j == 65){
-                printf("\x1b[31m"); //Afficher le texte en rouge
+                printf("\x1b[31m");
             }
-            printf("%c", strCartes[i][j]); // Affichage du caractère correspondant à la position (i, j) de la ligne
-        }    
-        // Vérification si la taille de la ligne dépasse 65, afin de réinitialiser le format de couleur à la normale
-        if (tailleLigne > 65){
-            printf("\x1b[0m"); // Réinitialisation du format de couleur
+            printf("%c", strCartes[i][j]);
         }
-        printf("\n"); // Saut de ligne après l'affichage de la ligne
+        if (tailleLigne > 65){
+            printf("\x1b[0m");
+        }
+        printf("\n");
     }
 }
 
