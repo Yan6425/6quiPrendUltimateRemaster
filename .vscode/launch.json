@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/pau/homee/a/ayoubrayan/Documents/6quiPrend",
-      "program": "/pau/homee/a/ayoubrayan/Documents/6quiPrend/build/Debug/outDebug",
+      "cwd": "/pau/homee/h/hourdebaig/6quiprend",
+      "program": "/pau/homee/h/hourdebaig/6quiprend/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <assert.h>
 
-
 typedef struct Carte{
     int numero;     //numéro carte de 1 à 104
     int valeur;     //nombre tête de boeuf de 1 à 7
