@@ -35,7 +35,7 @@ Carte creerCarte(int numero){
 typedef struct Joueur{              //structure joueur en fonction de son nom sa main et son nb de points
     char* nom;
     Carte* main;
-    int nbPoints;
+    int score;
 } Joueur;
 
 
@@ -43,7 +43,7 @@ Joueur creerJoueur(char* nom){              //donne un nom,une main et un nombre
     Joueur joueur;
     joueur.nom = nom;
     joueur.main = malloc(10 * sizeof(Carte));           //initialise la main du joueur
-    joueur.nbPoints = 0;
+    joueur.score = 0;
     return joueur;
 }
 
@@ -69,7 +69,8 @@ typedef struct Noeud{
 
 void insererNoeud(Noeud** liste, Carte carte, int index){
     for (int i = 0; i < index; i++){
-        *liste = (*liste)->suivant;
+        (*liste)->tailleListe++;
+        liste = &((*liste)->suivant);
     }
     Noeud* noeud = malloc(sizeof(Noeud));
     noeud->carte = carte;
@@ -82,16 +83,26 @@ void insererNoeud(Noeud** liste, Carte carte, int index){
 }
 
 
-Noeud* extraireNoeud(Noeud** liste, int index){
-    for (int i = 0; i < index; i++){
-        *liste = (*liste)->suivant;
+void triInsertion(Noeud** liste, Carte carte){
+    if (*liste == NULL || (*liste)->carte.numero > carte.numero) {  
+        insererNoeud(liste, carte, 0);
     }
-    Noeud* noeud = *liste;
-    *liste = (*liste)->suivant;
-    noeud->suivant = NULL;
-    noeud->tailleListe = 1;
+    else {
+        (*liste)->tailleListe++;
+        triInsertion(&((*liste)->suivant), carte);
+    }
+}
 
-    return noeud;
+
+Carte extraireNoeud(Noeud** liste, int index){
+    for (int i = 0; i < index; i++){
+        *liste.tailleListe--;
+        liste = &((*liste)->suivant);
+    }
+    Carte carte = (*liste)->carte;
+    *liste = (*liste)->suivant;
+
+    return carte;
 }
 
 
@@ -106,7 +117,6 @@ void affListe(Noeud* liste){
 }
 
 
-
 void reglages(){
 }
 
@@ -115,18 +125,45 @@ void lancerPartie(Joueur* tblJoueurs, int nbJoueurs, int nbCartes){
     Noeud** plateau = malloc(4 * sizeof(malloc(sizeof(Noeud))));      //initialisation du plateau
 
     distribution(plateau, tblJoueurs, nbJoueurs, nbCartes);
+    
+    for (int i = 0; i < 10; i++){
+        affPrincipal(plateau, tblJoueurs, nbJoueurs);
+        tailleMain = 10 - i;
+        Noeud* listeAttente = NULL;
+        
+        for (int j = 0; j < nbJoueurs; j++){
+            Joueur joueur = tblJoueurs[i];
+            printf("%s appuie sur entrée quand tu es prêt à jouer.", joueur.nom);
+            fflush(stdout);  // Vide le tampon de sortie pour afficher le message immédiatement
+            getchar();  // Attente de l'appui sur la touche Entrée
+            affPrincipal(plateau, tblJoueurs, nbJoueurs);
+            affMain(joueur.main, tailleMain);
+            triInsertion(&listeAttente, choixCarte(&joueur, tailleMain));
+        }
+
+        for (int j = 0; j < nbJoueurs; j++){
+            affPrincipal(plateau, tblJoueurs, nbJoueurs);
+            affLstAttente(listeAttente, nbJoueurs);
+            nettoyerPlateau(plateau);
+            placerCarte(plateau, extraireNoeud(&listeAttente, 0));
+            calcScore(plateau);
+            sleep(0.7);
+        }
+
+    }
 }
 
 
 void distribution(Noeud** plateau, Joueur* tblJoueurs, int nbJoueurs, int nbCartes){
     Noeud* paquet = melangerCartes(nbCartes);       //création du paquets de cartes
     for (int i = 0; i < 4; i++){
-        insererNoeud(&(plateau[i]), extraireNoeud(&paquet, 0)->carte, 0);
+        insererNoeud(&(plateau[i]), extraireNoeud(&paquet, 0), 0);
     }
     for (int i = 0; i < nbJoueurs; i++){
         tblJoueurs[i].main = creerMain(&paquet);
     }
 }
+
 
 Noeud* melangerCartes(int nbCartes){
     srand(time(NULL));
@@ -158,22 +195,9 @@ Carte* creerMain(Noeud** paquet) {
         triInsertion(cartesTriees, extraireNoeud(paquet, 0));
     }
     for (int i = 0; i < 10; i++) {
-        main[i] = extraireNoeud(cartesTriees, 0)->carte;
+        main[i] = extraireNoeud(cartesTriees, 0);
     }
     return main;
-}
-
-void triInsertion(Noeud** liste, Noeud* nouvNoeud) {
-    if (*liste == NULL) {  // Vérifier si *liste est NULL
-        *liste = nouvNoeud;
-    }
-    else if ((*liste)->carte.numero > nouvNoeud->carte.numero) {
-        nouvNoeud->suivant = *liste;
-        *liste = nouvNoeud;
-    }
-    else {
-        triInsertion(&((*liste)->suivant), nouvNoeud);
-    }
 }
 
 
@@ -201,9 +225,25 @@ Carte choixCarte (Joueur* joueur, int nbCartes){
 }
 
 
+void affPrincipal(Noeud** plateau, Joueur* tblJoueurs, int nbJoueurs){
+    printf("\x1b[2J\x1b[H");
+    affScores(tblJoueurs, nbJoueurs);
+    affPlateau(plateau);
+}
+
+
+void affScores(Joueur* tblJoueurs, int nbJoueurs){
+    printf("\x1b[1mSCORES      \x1b[0m");
+    for (int i = 0; i < nbJoueurs; i++){
+        printf("%s : %d      ", tblJoueurs[i].nom, tblJoueurs[i].score);
+    }
+    printf("\n\n");
+}
+
+
 void affPlateau(Noeud** plateau){
     for (int i = 0; i < 4; i++){
-        affLigne(&(plateau[i]));
+        affLigne(plateau[i]);
     }
 }
 
@@ -211,6 +251,7 @@ void affPlateau(Noeud** plateau){
 void affMain(Carte* main, int nbCartes){
     char** strCartes = malloc(8 * sizeof(char*));
     for (int i = 0; i < 8; i++) {
+        printf("\n");
         strCartes[i] = malloc(20 + 13 * nbCartes * sizeof(char));
         sprintf(strCartes[i], "%*s", 20, "");
     }
@@ -223,8 +264,21 @@ void affMain(Carte* main, int nbCartes){
 }
 
 
-void affLigne(Noeud** ligne){
-    int tailleLigne = 13 * (*ligne)->tailleListe;
+void affLstAttente(Noeud* listeAttente, int nbJoueurs){
+    int tailleLigne = 13 * nbJoueurs;
+    char** strCartes = malloc(8 * sizeof(char*));
+    for (int i = 0; i < 8; i++) {
+        strCartes[i] = malloc(tailleLigne * sizeof(char));
+    }
+    remplirLigne(listeAttente, strCartes);
+    for (int i = 0; i < 8; i++){
+        printf("%s\n", strCartes[i]);
+    }
+}
+
+
+void affLigne(Noeud* ligne){
+    int tailleLigne = 13 * ligne->tailleListe;
     char** strCartes = malloc(8 * sizeof(char*));
     for (int i = 0; i < 8; i++) {
         strCartes[i] = malloc(tailleLigne * sizeof(char));
@@ -245,20 +299,20 @@ void affLigne(Noeud** ligne){
 }
 
 
-void remplirLigne(Noeud** ligne, char** strCartes){
-    if ((*ligne)->suivant != NULL){
-        remplirLigne(&((*ligne)->suivant), strCartes);
+void remplirLigne(Noeud* ligne, char** strCartes){
+    if (ligne->suivant != NULL){
+        remplirLigne(&(ligne->suivant), strCartes);
     }
-    catStrCartes(strCartes, (*ligne)->carte);
+    catStrCartes(strCartes, ligne->carte);
 }
 
 
 void catStrCartes(char** strCartes, Carte carte){
-    char** tdb = strValeur(carte.valeur);
+    char** str = strValeur(carte.valeur);
     strcat(strCartes[0], " ---------   ");
     strcat(strCartes[1], "|         |  ");
-    strcat(strCartes[2], "|"); strcat(strCartes[2], tdb[0]); strcat(strCartes[2], "|  ");
-    strcat(strCartes[3], "|"); strcat(strCartes[3], tdb[1]); strcat(strCartes[3], "|  ");
+    strcat(strCartes[2], "|"); strcat(strCartes[2], str[0]); strcat(strCartes[2], "|  ");
+    strcat(strCartes[3], "|"); strcat(strCartes[3], str[1]); strcat(strCartes[3], "|  ");
     strcat(strCartes[4], "|         |  ");
     strcat(strCartes[5], "|   "); strcat(strCartes[5], stringNum(carte.numero)); strcat(strCartes[5], "   |  ");
     strcat(strCartes[6], "|         |  ");
@@ -275,27 +329,27 @@ char* stringNum(int numero){
 
 
 char** strValeur(int valeur){
-    char** tdb = malloc(2 * sizeof(malloc(5 * sizeof(char))));
+    char** str = malloc(2 * sizeof(malloc(5 * sizeof(char))));
 
     if (valeur == 7){
-        tdb[0] = " * * * * ";
-        tdb[1] = "  * * *  ";
+        str[0] = " * * * * ";
+        str[1] = "  * * *  ";
     }
     else if (valeur == 3){
-        tdb[0] = "  * * *  ";
-        tdb[1] = "         ";
+        str[0] = "  * * *  ";
+        str[1] = "         ";
     }
     else if (valeur == 2) {
-        tdb[0] = "   * *   ";
-        tdb[1] = "         ";
+        str[0] = "   * *   ";
+        str[1] = "         ";
     }
     else if (valeur == 5){
-        tdb[0] = "  * * *  ";
-        tdb[1] = "   * *   ";
+        str[0] = "  * * *  ";
+        str[1] = "   * *   ";
     }
     else if (valeur == 1){
-        tdb[0] = "    *    ";
-        tdb[1] = "         ";
+        str[0] = "    *    ";
+        str[1] = "         ";
     }
-    return tdb;
+    return str;
 }

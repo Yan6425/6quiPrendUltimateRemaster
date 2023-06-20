@@ -180,7 +180,7 @@ void affMain(Carte* main, int nbCartes){
 
 
 int main(){
-    printf("\x1b[1;1H");
+    printf("\x1b[2J\x1b[H");
 
     Noeud** plateau = (Noeud**)malloc(4 * sizeof(struct Node*));
     int numCartes[4][7] = {{5, 12, 45, 55, 10, 1, 80}, {35, 7}, {30, 12, 33, 104}, {14}};
@@ -193,7 +193,7 @@ int main(){
     }
 
     affPlateau(plateau);
-    
+
     for (int i = 0; i < 8; i++){
         printf("\n");
     }
