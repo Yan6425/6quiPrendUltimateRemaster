@@ -225,41 +225,52 @@ void affPlateau(Noeud** plateau){
 
 
 void affMain(Carte* main, int nbCartes){
+    // Allocation dynamique du tableau de pointeurs de chaînes de caractères pour stocker les lignes d'affichage des cartes
     char** strCartes = malloc(8 * sizeof(char*));
+    // Boucle pour initialiser chaque élément du tableau strCartes
     for (int i = 0; i < 8; i++) {
-        strCartes[i] = malloc(20 + 13 * nbCartes * sizeof(char));
+        // Allocation dynamique de mémoire pour chaque ligne en fonction du nombre de cartes
+        strCartes[i] = malloc(20 + 13 * nbCartes * sizeof(char));      
+        // Utilisation de sprintf pour initialiser chaque ligne avec des espaces vides
         sprintf(strCartes[i], "%*s", 20, "");
     }
+    // Boucle pour concaténer les informations de chaque carte à chaque ligne d'affichage
     for (int i = 0; i < nbCartes; i++){
         catStrCartes(strCartes, main[i]);
     }
+    // Boucle pour afficher chaque ligne d'affichage des cartes
     for (int i = 0; i < 8; i++){
         printf("%s\n", strCartes[i]);
     }
 }
 
-
 void affLigne(Noeud** ligne){
+    // Calcul de la taille de la ligne en fonction du nombre de cartes dans la liste de noeuds
     int tailleLigne = 13 * (*ligne)->tailleListe;
+    // Allocation dynamique du tableau de pointeurs de chaînes de caractères pour stocker les lignes d'affichage des cartes
     char** strCartes = malloc(8 * sizeof(char*));
+    // Boucle pour allouer dynamiquement de la mémoire pour chaque ligne d'affichage
     for (int i = 0; i < 8; i++) {
         strCartes[i] = malloc(tailleLigne * sizeof(char));
     }
+    // Appel de la fonction remplirLigne pour remplir les lignes d'affichage avec les informations des cartes
     remplirLigne(ligne, strCartes);
+    // Boucle pour afficher chaque ligne d'affichage des cartes
     for (int i = 0; i < 8; i++){
         for (int j = 0; j < tailleLigne; j++){
+            // Vérification si on atteint la position 65, qui correspond à la position où une carte doit être mise en rouge
             if (j == 65){
-                printf("\x1b[31m");
+                printf("\x1b[31m"); // Utilisation de la séquence d'échappement pour afficher le texte en rouge
             }
-            printf("%c", strCartes[i][j]);
-        }
+            printf("%c", strCartes[i][j]); // Affichage du caractère correspondant à la position (i, j) de la ligne
+        }    
+        // Vérification si la taille de la ligne dépasse 65, afin de réinitialiser le format de couleur à la normale
         if (tailleLigne > 65){
-            printf("\x1b[0m");
+            printf("\x1b[0m"); // Réinitialisation du format de couleur
         }
-        printf("\n");
+        printf("\n"); // Saut de ligne après l'affichage de la ligne
     }
 }
-
 
 void remplirLigne(Noeud** ligne, char** strCartes){
     if ((*ligne)->suivant != NULL){
@@ -270,7 +281,7 @@ void remplirLigne(Noeud** ligne, char** strCartes){
 
 
 void catStrCartes(char** strCartes, Carte carte){
-    char** tdb = strValeur(carte.valeur);
+    char** tdb = strValeur(carte.valeur);évidence
     strcat(strCartes[0], " ---------   ");
     strcat(strCartes[1], "|         |  ");
     strcat(strCartes[2], "|"); strcat(strCartes[2], tdb[0]); strcat(strCartes[2], "|  ");
