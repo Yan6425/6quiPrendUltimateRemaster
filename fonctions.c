@@ -62,91 +62,107 @@ Joueur* creerTblJoueurs(int nbJoueurs){             //mise en place d'un tableau
 }
 
 
-typedef struct Noeud{
-    Carte carte;
-    int tailleListe;
-    struct Noeud* suivant;
+typedef struct Noeud{   //structure avec la carte, la taille de la liste associée à ce nœud
+    Carte carte;            
+    int tailleListe;        
+    struct Noeud* suivant; 
 } Noeud;
 
 
-void insererNoeud(Noeud** liste, Carte carte, int index){
-    for (int i = 0; i < index; i++){
-        (*liste)->tailleListe++;
+void insererNoeud(Noeud** liste, Carte carte, int index) {
+    for (int i = 0; i < index; i++) {
+        (*liste)->tailleListe++;  // Incrémente la taille de la liste actuelle
         liste = &((*liste)->suivant);
     }
-    Noeud* noeud = malloc(sizeof(Noeud));
+    
+    Noeud* noeud = malloc(sizeof(Noeud));  // Alloue de la mémoire pour un nouveau nœud
     noeud->carte = carte;
-    if (*liste != NULL){
-        noeud->tailleListe = (*liste)->tailleListe + 1;
+    
+    if (*liste != NULL) {
+        noeud->tailleListe = (*liste)->tailleListe + 1;  // Ajoute 1 à la taille de la liste si elle n'est pas vide
+    } else {
+        noeud->tailleListe = 1; 
     }
-    else noeud->tailleListe = 1;
-    noeud->suivant = *liste;
-    *liste = noeud;
+    
+    noeud->suivant = *liste; 
+    *liste = noeud;  // Met à jour le pointeur de la liste pour pointer vers le nouveau nœud
 }
 
 
-void triInsertion(Noeud** liste, Carte carte){
-    if (*liste == NULL || (*liste)->carte.numero > carte.numero) {  
-        insererNoeud(liste, carte, 0);
-    }
-    else {
+void triInsertion(Noeud** liste, Carte carte) {
+    if (*liste == NULL || (*liste)->carte.numero > carte.numero) {
+        insererNoeud(liste, carte, 0);  // Insère la carte au début de la liste si la liste est vide ou si la carte doit être placée avant la première carte existante
+    } else {
         (*liste)->tailleListe++;
-        triInsertion(&((*liste)->suivant), carte);
+        triInsertion(&((*liste)->suivant), carte); 
     }
 }
 
 
-Carte extraireNoeud(Noeud** liste, int index){
-    for (int i = 0; i < index; i++){
-        (*liste)->tailleListe--;
-        liste = &((*liste)->suivant);
-    }
-    Carte carte = (*liste)->carte;
-    *liste = (*liste)->suivant;
 
+Carte extraireNoeud(Noeud** liste, int index) {
+    for (int i = 0; i < index; i++) {
+        (*liste)->tailleListe--;  // Décrémente la taille de la liste actuelle
+        liste = &((*liste)->suivant);  
+    }
+    
+    Carte carte = (*liste)->carte;  // Récupère la carte du nœud à extraire
+    *liste = (*liste)->suivant; 
+    
     return carte;
 }
 
 
-void affListe(Noeud* liste){
-    if (liste->suivant != NULL){
-        affListe(liste->suivant);
+void affListe(Noeud* liste) {
+    if (liste->suivant != NULL) {
+        affListe(liste->suivant);  // Récursivement appelle la fonction pour le prochain nœud dans la liste
     }
-    if (liste->suivant == NULL){
-        printf("\n");
+    
+    if (liste->suivant == NULL) {
+        printf("\n");  // Retour à la ligne une fois arrivé au dernier nœud de la liste
     }
+    
     printf("noeud.carte.numero = %d, noeud.carte.valeur = %d, noeud.tailleListe = %d\n", liste->carte.numero, liste->carte.valeur, liste->tailleListe);
+    
 }
 
 
-void reglages(int* nbJoueurs, int* nbCartes){
+
+void reglages(int* nbJoueurs, int* nbCartes) {
     int reponse1;
     do {
         printf("Combien de joueurs êtes-vous ? (jouable de 2 à 10 joueurs) ");
         scanf("%d", &reponse1);
-        effacerBuffer();
-    } while (reponse1 < 2 || reponse1 > 10); 
-    *nbJoueurs = reponse1;
-    char* reponse2 = malloc(100 * sizeof(char));
+        effacerBuffer(); 
+    } while (reponse1 < 2 || reponse1 > 10);
+    
+    *nbJoueurs = reponse1;  // Met à jour le nombre de joueurs avec la réponse fournie
+    
+    char* reponse2 = malloc(100 * sizeof(char));  // Alloue de la mémoire pour stocker la réponse
+    
     do {
         printf("Voulez-vous jouer avec le nombre maximum de cartes ? (y/n) ");
         scanf("%s", reponse2);
         effacerBuffer();
-    } while (strcmp(reponse2, "y") && strcmp(reponse2, "n")); 
-    if (!strcmp(reponse2, "y")){
-        *nbCartes = 104;
+    } while (strcmp(reponse2, "y") && strcmp(reponse2, "n"));
+    
+    if (!strcmp(reponse2, "y")) {
+        *nbCartes = 104;  // Met à jour le nombre de cartes avec 104 si la réponse est "y"
         printf("%d", strcmp(reponse2, "y"));
+    } else {
+        *nbCartes = 4 + *nbJoueurs * 10;  // Calcule le nombre de cartes en fonction du nombre de joueurs si la réponse est "n"
     }
-    else *nbCartes = 4 + *nbJoueurs * 10;
-    printf("Vous jouerez avec %d cartes sur 104.\n", *nbCartes);
+    
+    printf("Vous jouerez avec %d cartes sur 104.\n", *nbCartes);  // Affiche le nombre de cartes sélectionné
 }
+
 
 
 void lancerPartie(Joueur* tblJoueurs, int nbJoueurs, int nbCartes){
     Noeud** plateau = malloc(4 * sizeof(malloc(sizeof(Noeud))));      //initialisation du plateau
 
-    distribution(plateau, tblJoueurs, nbJoueurs, nbCartes);
-    
+    distribution(plateau, tblJoueurs, nbJoueurs, nbCartes);  // Distribue les cartes aux joueurs et initialise le plateau
+
     for (int i = 0; i < 10; i++){
         int tailleMain = 10 - i;
         Noeud* listeAttente = NULL;
@@ -154,23 +170,25 @@ void lancerPartie(Joueur* tblJoueurs, int nbJoueurs, int nbCartes){
         for (int j = 0; j < nbJoueurs; j++){
             affPrincipal(plateau, tblJoueurs, nbJoueurs);
             Joueur* joueur = &(tblJoueurs[j]);
-            printf("%s appuie sur entrée quand tu es prêt à jouer.", joueur->nom);
+            printf("%s appuie sur entrée quand tu es prêt à jouer.", joueur->nom);  
             getchar();
             effacerBuffer();
-            affPrincipal(plateau, tblJoueurs, nbJoueurs);
-            affMain(joueur->main, tailleMain);
-            triInsertion(&listeAttente, choixCarte(joueur, tailleMain));
+            
+            affPrincipal(plateau, tblJoueurs, nbJoueurs);  // Affiche à nouveau l'état actuel du plateau
+            affMain(joueur->main, tailleMain);  // Affiche la main du joueur
+            triInsertion(&listeAttente, choixCarte(joueur, tailleMain));  // Trie et insère la carte choisie par le joueur dans la liste d'attente
         }
+        
         for (int j = 0; j < nbJoueurs; j++){
-            affPrincipal(plateau, tblJoueurs, nbJoueurs);
+            affPrincipal(plateau, tblJoueurs, nbJoueurs);  // Affiche l'état actuel du plateau
             affLstAttente(listeAttente, nbJoueurs);
-            nettoyerPlateau(plateau);
-            placerCarte(plateau, extraireNoeud(&listeAttente, 0));
+            nettoyerPlateau(plateau); 
+            placerCarte(plateau, extraireNoeud(&listeAttente, 0));  // Place la première carte de la liste d'attente sur le plateau
             calcScore(plateau);
-            sleep(1);
+            sleep(1);  // Attend 1 seconde avant de continuer
         }
     }
-    affPrincipal(plateau, tblJoueurs, nbJoueurs);
+    affPrincipal(plateau, tblJoueurs, nbJoueurs);  // Affiche l'état final du plateau après 10 tours de jeu
 }
 
 
