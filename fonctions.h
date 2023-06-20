@@ -23,7 +23,8 @@ Carte choixCarte(Joueur* joueur, int nbCartes);//le joueur choisi parmis ses 10 
 void reduireMain(Carte* main, int reponseJoueur, int nbCartes);
 void nettoyerPlateau(Noeud** plateau);
 void placerCarte(Noeud** plateau, Carte carte);
-void calcScore(Noeud** plateau, Joueur* joueur);
+int choixLigne(Joueur* joueur);
+void calcScore(Noeud** plateau);
 int scoreListe(Noeud* liste);
 void affPrincipal(Noeud** plateau, Joueur* tblJoueurs, int nbJoueurs);
 void affScores(Joueur* tblJoueurs, int nbJoueurs);

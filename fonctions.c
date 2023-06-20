@@ -9,6 +9,7 @@
 typedef struct Carte{
     int numero;     //numéro carte de 1 à 104
     int valeur;     //nombre tête de boeuf de 1 à 7
+    Joueur* joueur;
 } Carte;
 
 
@@ -24,7 +25,7 @@ Carte creerCarte(int numero){
     else if (carte.numero % 5 == 0){
         carte.valeur = 2; 
     }
-    else if (carte.numero % 10 == 0){
+    else if (carte.numero % 11 == 0){
         carte.valeur = 5;
     }
     else carte.valeur = 1;
@@ -133,22 +134,20 @@ void lancerPartie(Joueur* tblJoueurs, int nbJoueurs, int nbCartes){
         
         for (int j = 0; j < nbJoueurs; j++){
             affPrincipal(plateau, tblJoueurs, nbJoueurs);
-            Joueur joueur = tblJoueurs[j];
-            printf("%s appuie sur entrée quand tu es prêt à jouer.", joueur.nom);
+            Joueur* joueur = &(tblJoueurs[j]);
+            printf("%s appuie sur entrée quand tu es prêt à jouer.", joueur->nom);
             getchar();
             effacerBuffer();
             affPrincipal(plateau, tblJoueurs, nbJoueurs);
-            affMain(joueur.main, tailleMain);
-            triInsertion(&listeAttente, choixCarte(&joueur, tailleMain));
+            affMain(joueur->main, tailleMain);
+            triInsertion(&listeAttente, choixCarte(joueur, tailleMain));
         }
-
         for (int j = 0; j < nbJoueurs; j++){
-            Joueur joueur = tblJoueurs[j];
             affPrincipal(plateau, tblJoueurs, nbJoueurs);
             affLstAttente(listeAttente, nbJoueurs);
             nettoyerPlateau(plateau);
             placerCarte(plateau, extraireNoeud(&listeAttente, 0));
-            calcScore(plateau, &joueur);
+            calcScore(plateau);
             sleep(1);
         }
     }
@@ -218,6 +217,7 @@ Carte choixCarte (Joueur* joueur, int nbCartes){
     } while (reponseJoueur < 1 || reponseJoueur > nbCartes);     //test pour s'assurer que le joueur entre bien un nombre correct
     carte = joueur->main[reponseJoueur - 1];
     reduireMain(joueur->main, reponseJoueur, nbCartes);
+    carte.joueur = joueur;
 
     return carte;
 }
@@ -248,14 +248,31 @@ void placerCarte(Noeud** plateau, Carte carte){
             iMax = i;
         }
     }
-    insererNoeud(&(plateau[iMax - 1]), carte, 0);
+    if (!iMax){
+        iMax = choixLigne(carte.joueur);
+        carte.joueur->score += scoreListe(plateau[iMax - 1]);
+        plateau[iMax - 1]->carte = carte;
+        plateau[iMax - 1]->suivant = NULL;
+        plateau[iMax - 1]->tailleListe = 1;
+    } else insererNoeud(&(plateau[iMax - 1]), carte, 0);
 }
 
 
-void calcScore(Noeud** plateau, Joueur* joueur){
+int choixLigne(Joueur* joueur){
+    int choix;
+    do {
+        printf("%s, sur quelle colonne veux-tu jouer ? ", joueur->nom);
+        scanf("%d", &choix);
+        effacerBuffer();
+    } while (choix < 1 || choix > 4);
+    return choix;
+}
+
+
+void calcScore(Noeud** plateau){
     for (int i = 0; i < 4; i++){
         if (plateau[i]->tailleListe > 5){
-            joueur->score += scoreListe(plateau[i]);
+            plateau[i]->carte.joueur->score += scoreListe(plateau[i]);
         }
     }
 }
