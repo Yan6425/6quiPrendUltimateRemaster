@@ -9,15 +9,16 @@ Joueur* creerTblJoueurs(int nbJoueurs);//rassemble tous les joueurs dans un tabl
 typedef struct Noeud Noeud; // sert a modéliser un noeud d'une liste chainée 
 void insererNoeud(Noeud** liste, Carte carte, int index);
 Noeud* extraireNoeud(Noeud** liste, int index);
+void affListe(Noeud* liste);
 
 
 void reglages();// sert à parametrer le jeu
 void lancerPartie(Joueur* tblJoueurs, int nbJoueurs, int nbCartes);//mets en place le plateau et la distribution
 void distribution(Noeud** plateau, Joueur* tblJoueurs, int nbJoueurs, int nbCartes);
 Noeud* melangerCartes(int nbCartes);
-Carte* distribuerMain(Noeud** paquet);//distribue les mains aux joueurs
+Carte* creerMain(Noeud** paquet);
+void triInsertion(Noeud** liste, Noeud* nouvNoeud);
 Carte choixCarte(Joueur* joueur, int nbCartes);//le joueur choisi parmis ses 10 cartes en main
-void triCarte();
 void comparaisons();
 void distributionPts(Noeud** plateau, Joueur* tblJoueurs, int nbJoueurs, int nbCartes);
 void affPlateau(Noeud** plateau);

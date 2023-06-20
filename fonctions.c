@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
 
 typedef struct Carte{
@@ -49,8 +50,8 @@ Joueur creerJoueur(char* nom){              //donne un nom,une main et un nombre
 
 Joueur* creerTblJoueurs(int nbJoueurs){             //mise en place d'un tableau dynamique pour rassembler tous les joueurs
     Joueur* tblJoueur = malloc(nbJoueurs * sizeof(Joueur));
-    char* nom = malloc(100 * sizeof(char));
     for (int i = 0; i < nbJoueurs; i++){
+        char* nom = malloc(100 * sizeof(char));
         printf("Joueur %d, entre ton nom : ", i + 1);
         scanf("%s", nom);
         tblJoueur[i] = creerJoueur(nom);
@@ -68,7 +69,7 @@ typedef struct Noeud{
 
 void insererNoeud(Noeud** liste, Carte carte, int index){
     for (int i = 0; i < index; i++){
-        liste = &((*liste)->suivant);
+        *liste = (*liste)->suivant;
     }
     Noeud* noeud = malloc(sizeof(Noeud));
     noeud->carte = carte;
@@ -83,13 +84,27 @@ void insererNoeud(Noeud** liste, Carte carte, int index){
 
 Noeud* extraireNoeud(Noeud** liste, int index){
     for (int i = 0; i < index; i++){
-        liste = &((*liste)->suivant);
+        *liste = (*liste)->suivant;
     }
     Noeud* noeud = *liste;
     *liste = (*liste)->suivant;
+    noeud->suivant = NULL;
+    noeud->tailleListe = 1;
 
-    return carte;
+    return noeud;
 }
+
+
+void affListe(Noeud* liste){
+    if (liste->suivant != NULL){
+        affListe(liste->suivant);
+    }
+    if (liste->suivant == NULL){
+        printf("\n");
+    }
+    printf("noeud.carte.numero = %d, noeud.carte.valeur = %d, noeud.tailleListe = %d\n", liste->carte.numero, liste->carte.valeur, liste->tailleListe);
+}
+
 
 
 void reglages(){
@@ -97,19 +112,19 @@ void reglages(){
 
 
 void lancerPartie(Joueur* tblJoueurs, int nbJoueurs, int nbCartes){
-    Noeud** plateau = malloc(4 * sizeof( (Noeud*)malloc(sizeof(Noeud)) ));      //initialisation du plateau
+    Noeud** plateau = malloc(4 * sizeof(malloc(sizeof(Noeud))));      //initialisation du plateau
 
     distribution(plateau, tblJoueurs, nbJoueurs, nbCartes);
 }
 
 
 void distribution(Noeud** plateau, Joueur* tblJoueurs, int nbJoueurs, int nbCartes){
-    Noeud* paquet = melangerCartes(int nbCartes);       //création du paquets de cartes
+    Noeud* paquet = melangerCartes(nbCartes);       //création du paquets de cartes
     for (int i = 0; i < 4; i++){
         insererNoeud(&(plateau[i]), extraireNoeud(&paquet, 0)->carte, 0);
     }
     for (int i = 0; i < nbJoueurs; i++){
-        tblJoueurs[i].main = distribuerMain(&paquet);
+        tblJoueurs[i].main = creerMain(&paquet);
     }
 }
 
