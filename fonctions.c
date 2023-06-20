@@ -281,35 +281,49 @@ void nettoyerPlateau(Noeud** plateau){
 
 void placerCarte(Noeud** plateau, Carte carte){
     int iMax = 0;
+    // Recherche de la colonne où placer la carte en trouvant la colonne avec la plus grande carte inférieure à la carte donnée
     for (int i = 1; i <= 4; i++){
         if (plateau[i - 1]->carte.numero < carte.numero && (iMax == 0 || plateau[iMax - 1]->carte.numero < plateau[i - 1]->carte.numero)){
             iMax = i;
         }
     }
     if (!iMax){
+        // Si aucune colonne n'a été trouvée, demande au joueur de choisir une colonne
         iMax = choixLigne(carte.joueur);
+        // Ajout du score de la liste actuelle au score du joueur
         carte.joueur->score += scoreListe(plateau[iMax - 1]);
+        // Mise à jour du noeud de la colonne choisie avec la nouvelle carte
         plateau[iMax - 1]->carte = carte;
         plateau[iMax - 1]->suivant = NULL;
         plateau[iMax - 1]->tailleListe = 1;
-    } else insererNoeud(&(plateau[iMax - 1]), carte, 0);
+    } else {
+        // Si une colonne a été trouvée, insérer la nouvelle carte dans la liste de cette colonne
+        insererNoeud(&(plateau[iMax - 1]), carte, 0);
+    }
 }
 
 
 int choixLigne(Joueur* joueur){
     int choix;
     do {
+        // Affichage de la question avec le nom du joueur
         printf("%s, sur quelle colonne veux-tu jouer ? ", joueur->nom);
+        // Lecture de la réponse du joueur
         scanf("%d", &choix);
+        // Effacement du tampon d'entrée pour éviter les problèmes de lecture ultérieurs
         effacerBuffer();
-    } while (choix < 1 || choix > 4);
+    } while (choix < 1 || choix > 4); // Condition de validation de la colonne choisie
+    
     return choix;
 }
 
 
 void calcScore(Noeud** plateau){
+    // Parcours des 4 listes du plateau
     for (int i = 0; i < 4; i++){
+        // Vérifie si la taille de la liste dépasse 5 cartes
         if (plateau[i]->tailleListe > 5){
+            // Ajoute le score de la liste au score du joueur associé
             plateau[i]->carte.joueur->score += scoreListe(plateau[i]);
         }
     }
@@ -317,10 +331,14 @@ void calcScore(Noeud** plateau){
 
 
 int scoreListe(Noeud* liste){
+    // Initialisation du score avec la valeur de la carte du noeud actuel
     int score = liste->carte.valeur;
+    // Vérifie si le noeud suivant existe
     if (liste->suivant != NULL){
+        // Appel récursif pour calculer le score des noeuds suivants et les ajouter au score actuel
         score += scoreListe(liste->suivant);
     }
+    // Retourne le score total
     return score;
 }
 
@@ -333,10 +351,13 @@ void affPrincipal(Noeud** plateau, Joueur* tblJoueurs, int nbJoueurs){
 
 
 void affScores(Joueur* tblJoueurs, int nbJoueurs){
+    // Affichage de l'en-tête des scores en utilisant le style gras
     printf("\x1b[1mSCORES      \x1b[0m");
+    // Boucle pour afficher les noms des joueurs et leurs scores
     for (int i = 0; i < nbJoueurs; i++){
         printf("%s : %d      ", tblJoueurs[i].nom, tblJoueurs[i].score);
     }
+    // Saut de ligne supplémentaire pour améliorer la lisibilité
     printf("\n\n");
 }
 
@@ -349,18 +370,23 @@ void affPlateau(Noeud** plateau){
 
 
 void affMain(Carte* main, int nbCartes){
+    // Allocation dynamique d'un tableau de pointeurs de chaînes de caractères
     char** strCartes = malloc(8 * sizeof(char*));
+    // Boucle pour allouer de la mémoire à chaque chaîne de caractères dans le tableau
     for (int i = 0; i < 8; i++) {
         printf("\n");
         strCartes[i] = malloc(20 + 13 * nbCartes * sizeof(char));
         sprintf(strCartes[i], "%*s", 20, "");
     }
+    // Boucle pour concaténer les cartes de la main dans les chaînes de caractères
     for (int i = 0; i < nbCartes; i++){
         catStrCartes(strCartes, main[i]);
     }
+    // Boucle pour afficher chaque chaîne de caractères dans le tableau
     for (int i = 0; i < 8; i++){
         printf("%s\n", strCartes[i]);
     }
+    // Affichage des numéros de cartes
     printf("                    ");
     for (int i = 1; i <= nbCartes; i++){
         printf("    %2d       ", i);
@@ -370,13 +396,17 @@ void affMain(Carte* main, int nbCartes){
 
 
 void affLstAttente(Noeud* listeAttente, int nbJoueurs){
+    // Calcul de la taille totale de la ligne en nombre de caractères
     int tailleLigne = 20 + 13 * nbJoueurs;
+    // Allocation dynamique d'un tableau de pointeurs de chaînes de caractères
     char** strCartes = malloc(8 * sizeof(char*));
+    // Boucle pour allouer de la mémoire à chaque chaîne de caractères dans le tableau
     for (int i = 0; i < 8; i++){
         printf("\n");
         strCartes[i] = malloc(tailleLigne * sizeof(char));
     }
     remplirStrAttente(listeAttente, strCartes);
+    // Boucle pour afficher chaque chaîne de caractères dans le tableau
     for (int i = 0; i < 8; i++){
         printf("%s\n", strCartes[i]);
     }
@@ -385,41 +415,53 @@ void affLstAttente(Noeud* listeAttente, int nbJoueurs){
 
 void remplirStrAttente(Noeud* ligne, char** strCartes){
     catStrCartes(strCartes, ligne->carte);
+    // Vérifie si le noeud suivant existe
     if (ligne->suivant != NULL){
+        // Appel récursif pour remplir la chaîne de caractères d'attente avec les cartes suivantes
         remplirLigne(ligne->suivant, strCartes);
     }
 }
 
-
 void affLigne(Noeud* ligne){
-    int tailleLigne = 13 * ligne->tailleListe;
-    char** strCartes = malloc(8 * sizeof(char*));
+    int tailleLigne = 13 * ligne->tailleListe;  
+    // Allocation dynamique d'un tableau de pointeurs de chaînes de caractères
+    char** strCartes = malloc(8 * sizeof(char*)); 
+    // Boucle pour allouer de la mémoire à chaque chaîne de caractères dans le tableau
     for (int i = 0; i < 8; i++) {
         strCartes[i] = malloc(tailleLigne * sizeof(char));
-    }
+    } 
+    // Appel de la fonction remplirLigne pour remplir les chaînes de caractères dans le tableau
     remplirLigne(ligne, strCartes);
+    // Boucle pour afficher chaque ligne de cartes
     for (int i = 0; i < 8; i++){
+        // Boucle pour parcourir chaque caractère dans la ligne
         for (int j = 0; j < tailleLigne; j++){
+            // Vérifie si on atteint la position 65 pour changer la couleur du texte
             if (j == 65){
-                printf("\x1b[31m");
+                printf("\x1b[31m"); // Change la couleur du texte en rouge pour montrer que c'est pas bon 
             }
+              // Affiche le caractère de la carte
             printf("%c", strCartes[i][j]);
         }
+        // Vérifie si la taille de la ligne dépasse la position 65 pour réinitialiser la couleur du texte
         if (tailleLigne > 65){
-            printf("\x1b[0m");
+            printf("\x1b[0m"); // Réinitialise la couleur du texte
         }
+        // Passe à la ligne suivante
         printf("\n");
     }
 }
 
 
 void remplirLigne(Noeud* ligne, char** strCartes){
+    // Vérifie si le noeud suivant existe
     if (ligne->suivant != NULL){
+        // Appel récursif pour remplir la ligne suivante
         remplirLigne(ligne->suivant, strCartes);
     }
+    // Ajoute la chaîne de caractères représentant la carte du noeud actuel
     catStrCartes(strCartes, ligne->carte);
 }
-
 
 void catStrCartes(char** strCartes, Carte carte){
     char** str = strValeur(carte.valeur);
@@ -435,11 +477,13 @@ void catStrCartes(char** strCartes, Carte carte){
 
 
 char* stringNum(int numero){
+    // Allocation dynamique d'un tableau de caractères de taille 4
     char* strNum = malloc(4 * sizeof(char));
-    sprintf(strNum, "%*s%d%*s", !(numero / 100), "", numero, !(numero / 10), "");
-
+    // convertir le numero en une chaine de caractères centrée
+    sprintf(strNum, "%*s%d%*s", !(numero / 100), "", numero, !(numero / 10), "")
+    // Retourne le tableau de caractères contenant le numéro formaté
     return strNum;
-} 
+}
 
 
 char** strValeur(int valeur){
