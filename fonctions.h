@@ -8,7 +8,8 @@ Joueur creerJoueur(char* nom);// cree un joueur avec un nom, une main et un nomb
 Joueur* creerTblJoueurs(int nbJoueurs);//rassemble tous les joueurs dans un tableau
 typedef struct Noeud Noeud; // sert a modéliser un noeud d'une liste chainée 
 void insererNoeud(Noeud** liste, Carte carte, int index);//création et définition de la taille des noeuds 
-Noeud* extraireNoeud(Noeud** liste, int index);// permet d'extraire un noeud d'une liste chainée
+void triInsertion(Noeud** liste, Carte carte);
+Carte extraireNoeud(Noeud** liste, int index);// permet d'extraire un noeud d'une liste chainée
 void affListe(Noeud* liste);//afficher le numéro la valeur et la taille de la liste
 
 
@@ -19,10 +20,14 @@ Noeud* melangerCartes(int nbCartes);//mélanger les cartes dans le paquets avec 
 Carte* creerMain(Noeud** paquet);//Extraire 10 cartes du paquets pour créer la main du joueur
 void triInsertion(Noeud** liste, Noeud* nouvNoeud);
 Carte choixCarte(Joueur* joueur, int nbCartes);//le joueur choisi parmis ses 10 cartes en main
-void comparaisons();
-void distributionPts(Noeud** plateau, Joueur* tblJoueurs, int nbJoueurs, int nbCartes);
+void nettoyerPlateau(Noeud** plateau);
+void placerCarte(Noeud** plateau, Carte carte);
+void calcScore(Noeud** plateau);
+void affPrincipal(Noeud** plateau, Joueur* tblJoueurs, int nbJoueurs);
+void affScores(Joueur* tblJoueurs, int nbJoueurs);
 void affPlateau(Noeud** plateau);
 void affMain(Carte* main, int nbCartes);
+void affLstAttente(Noeud* listeAttente, int nbJoueurs);
 void affLigne(Noeud** ligne);
 void remplirLigne(Noeud** ligne, char** strCartes);
 void catStrCartes(char** strCartes, Carte carte);
